@@ -2,8 +2,13 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
-  tags: []
+  serializedVersion: 3
+  tags:
+  - Leader
+  - CrowdUnit
+  - Hazard
+  - Boundary
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX
@@ -13,11 +18,11 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Crowd
+  - Leader
+  - Hazard
+  - Boundary
+  - VFX
   - 
   - 
   - 
@@ -41,3 +46,21 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 0
+    locked: 0
+  - name: Track
+    uniqueID: 476590727
+    locked: 0
+  - name: Hazards
+    uniqueID: 1480780922
+    locked: 0
+  - name: Crowd
+    uniqueID: 506472769
+    locked: 0
+  - name: Effects
+    uniqueID: 553616468
+    locked: 0
+  m_RenderingLayers:
+  - Default
+  m_MigratedRenderPipelines: []
