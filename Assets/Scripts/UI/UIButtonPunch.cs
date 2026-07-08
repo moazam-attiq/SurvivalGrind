@@ -46,6 +46,7 @@ namespace SurvivalGrind.UI
         {
             if (!Interactable) return;
             _pressed = true;
+            AudioManager.PlayUiClick();
             Restart();
         }
 

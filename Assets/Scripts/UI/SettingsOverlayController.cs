@@ -113,7 +113,8 @@ namespace SurvivalGrind.UI
 
         private void OnMusicVolumeChanged(float value)
         {
-            if (musicPlayer != null) musicPlayer.SetVolume(value);
+            var player = musicPlayer != null ? musicPlayer : MusicPlayer.Instance;
+            if (player != null) player.SetVolume(value);
         }
 
     }

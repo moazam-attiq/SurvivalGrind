@@ -12,6 +12,8 @@ namespace SurvivalGrind.UI
         [SerializeField] private AudioClip track;
         [SerializeField] private float defaultVolume = 0.6f;
 
+        public static MusicPlayer Instance => _instance;
+
         public AudioSource Source { get; private set; }
 
         private void Awake()

@@ -1,0 +1,12 @@
+Commander/ (from "2 Punk") and Follower/ (from "1 Biker")
+Source: "3 Cyberpunk Characters" by CraftPix.net (via OpenGameArt.org)
+https://opengameart.org/content/3-cyberpunk-characters
+License: OGA-BY 3.0 (https://opengameart.org/content/oga-by-30-attribution)
+Attribution required if shipped: "Cyberpunk character sprites by CraftPix.net (opengameart.org), OGA-BY 3.0."
+
+---
+
+Environment/, VFX/ (tileset, background, props, turret, shot, shot-hit, enemy-explosion)
+Source: "Warped City" by (uploader: dogchicken / Warped City pack)
+https://opengameart.org/content/warped-city
+License: CC0 (public domain, attribution not required but credited here)
