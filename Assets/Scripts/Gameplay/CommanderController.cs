@@ -9,6 +9,11 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private float forwardSpeed = 4.5f;
         [SerializeField] private float nudgeSpeedUpMultiplier = 1.4f;
         [SerializeField] private float nudgeSlowDownMultiplier = 0.55f;
+        [SerializeField] private float loopIntervalSeconds = 30f;
+        [SerializeField] private float laneShiftDistance = 6f;
+        [SerializeField] private float laneShiftSpeed = 14f;
+
+        public static event System.Action OnLoopReset;
 
         [Header("Animation")]
         [SerializeField] private SpriteRenderer bodyRenderer;
@@ -28,11 +33,14 @@ namespace SurvivalGrind.Gameplay
         private Vector3 baseScale;
         private float animTime;
         private float spawnX;
+        private float spawnY;
+        private int lastLoopIndex;
 
         private void Awake()
         {
             baseScale = transform.localScale;
             spawnX = transform.position.x;
+            spawnY = transform.position.y;
         }
 
         private void Update()
@@ -61,6 +69,40 @@ namespace SurvivalGrind.Gameplay
             else
             {
                 Velocity = Vector3.zero;
+            }
+
+            if (runner != null && runner.State == LevelState.Playing)
+            {
+                int currentLoopIndex = Mathf.FloorToInt(runner.SurvivalTime / loopIntervalSeconds);
+                if (currentLoopIndex > lastLoopIndex)
+                {
+                    lastLoopIndex = currentLoopIndex;
+                    Vector3 pos = transform.position;
+                    pos.x = spawnX;
+                    transform.position = pos;
+                    OnLoopReset?.Invoke();
+                }
+            }
+
+            if (runner != null)
+            {
+                GravityLane lane = GravityLane.Ground;
+                if (canMove && Keyboard.current != null)
+                {
+                    if (Keyboard.current.upArrowKey.isPressed) lane = GravityLane.Upper;
+                    else if (Keyboard.current.downArrowKey.isPressed) lane = GravityLane.Lower;
+                }
+                runner.SetGravityLane(lane);
+
+                float targetY = lane switch
+                {
+                    GravityLane.Upper => spawnY + laneShiftDistance,
+                    GravityLane.Lower => spawnY - laneShiftDistance,
+                    _ => spawnY
+                };
+                Vector3 pos = transform.position;
+                pos.y = Mathf.MoveTowards(pos.y, targetY, laneShiftSpeed * Time.deltaTime);
+                transform.position = pos;
             }
 
             animTime += Time.deltaTime * (isFrozen ? 0.15f : (canMove ? runBobSpeed : idleBobSpeed));

@@ -19,12 +19,11 @@ namespace SurvivalGrind.Gameplay
         private Camera cam;
         private Vector3 positionVelocity;
         private float sizeVelocity;
-        private float fixedY;
+        private float yOffsetFromCommander;
 
         private void Awake()
         {
             cam = GetComponent<Camera>();
-            fixedY = transform.position.y;
         }
 
         private void Start()
@@ -38,6 +37,32 @@ namespace SurvivalGrind.Gameplay
             {
                 formation = FindFirstObjectByType<CrowdFormationController>();
             }
+            if (commander != null)
+            {
+                yOffsetFromCommander = transform.position.y - commander.position.y;
+            }
+        }
+
+        private void OnEnable()
+        {
+            CommanderController.OnLoopReset += HandleLoopReset;
+        }
+
+        private void OnDisable()
+        {
+            CommanderController.OnLoopReset -= HandleLoopReset;
+        }
+
+        private void HandleLoopReset()
+        {
+            if (commander == null) return;
+
+            float backDistance = formation != null ? formation.BackRowDistance : 4f;
+            Vector3 pos = transform.position;
+            pos.x = commander.position.x - backDistance * trailBias;
+            pos.y = commander.position.y + yOffsetFromCommander;
+            transform.position = pos;
+            positionVelocity = Vector3.zero;
         }
 
         private void LateUpdate()
@@ -49,7 +74,7 @@ namespace SurvivalGrind.Gameplay
 
             Vector3 targetPos = transform.position;
             targetPos.x = commander.position.x - backDistance * trailBias;
-            targetPos.y = fixedY;
+            targetPos.y = commander.position.y + yOffsetFromCommander;
             targetPos.z = transform.position.z;
             transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref positionVelocity, positionSmoothTime);
 
