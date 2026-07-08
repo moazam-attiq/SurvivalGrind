@@ -72,6 +72,8 @@ namespace SurvivalGrind.Gameplay
             {
                 runner.OnAliveChanged += HandleAliveChanged;
             }
+
+            CommanderController.OnLoopReset += HandleLoopReset;
         }
 
         private void OnDestroy()
@@ -80,6 +82,22 @@ namespace SurvivalGrind.Gameplay
             if (runner != null)
             {
                 runner.OnAliveChanged -= HandleAliveChanged;
+            }
+
+            CommanderController.OnLoopReset -= HandleLoopReset;
+        }
+
+        private void HandleLoopReset()
+        {
+            if (commander == null) return;
+
+            for (int i = 0; i < active.Count; i++)
+            {
+                var m = active[i];
+                if (m.dying) continue;
+
+                m.t.position = commander.position + GetSlotOffset(i);
+                m.velocity = Vector3.zero;
             }
         }
 

@@ -14,6 +14,13 @@ namespace SurvivalGrind.Gameplay
         Defeat
     }
 
+    public enum GravityLane
+    {
+        Ground,
+        Upper,
+        Lower
+    }
+
     public class LevelRunner : MonoBehaviour
     {
         public static LevelRunner Instance { get; private set; }
@@ -21,7 +28,6 @@ namespace SurvivalGrind.Gameplay
 
         [Header("Config")]
         [SerializeField] private float survivalTarget = 120f;
-        [SerializeField] private int passiveScorePerSecond = 10;
         [SerializeField] private int safePassBonus = 50;
         [SerializeField] private float comboMultiplierStep = 0.2f;
         [SerializeField] private float comboMultiplierCap = 2f;
@@ -29,6 +35,11 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private int startingCrowdCount = 50;
         [SerializeField] private float scrollSpeed = 4f;
         [SerializeField] private int freezeBlockBonus = 40;
+        [SerializeField] private int gravityShiftPassBonus = 40;
+
+        [Header("Progression")]
+        [SerializeField] private string nextLevelSceneName = "Level 2";
+        [SerializeField] private int levelNumber = 1;
 
         [Header("Panels")]
         [SerializeField] private GameObject victoryPanel;
@@ -46,6 +57,7 @@ namespace SurvivalGrind.Gameplay
         public int AliveCount { get; private set; }
         public float SurvivalTime { get; private set; }
         public bool IsFrozen { get; private set; }
+        public GravityLane CurrentGravityLane { get; private set; } = GravityLane.Ground;
         public bool SurvivalComplete { get; private set; }
         public float SurvivalTarget => survivalTarget;
         public int StartingCrowdCount => startingCrowdCount;
@@ -58,7 +70,6 @@ namespace SurvivalGrind.Gameplay
         public event Action OnPortalReady;
 
         private int consecutiveSafePasses;
-        private float scoreTimer;
 
         private void Awake()
         {
@@ -81,13 +92,6 @@ namespace SurvivalGrind.Gameplay
             SurvivalTime += Time.deltaTime;
             OnTimeChanged?.Invoke(SurvivalTime, survivalTarget);
 
-            scoreTimer += Time.deltaTime;
-            if (scoreTimer >= 1f)
-            {
-                scoreTimer -= 1f;
-                AddScore(passiveScorePerSecond);
-            }
-
             if (!SurvivalComplete && SurvivalTime >= survivalTarget)
             {
                 SurvivalComplete = true;
@@ -99,6 +103,11 @@ namespace SurvivalGrind.Gameplay
         public void SetFrozen(bool frozen)
         {
             IsFrozen = frozen;
+        }
+
+        public void SetGravityLane(GravityLane lane)
+        {
+            CurrentGravityLane = lane;
         }
 
         public void AddScore(int delta)
@@ -129,6 +138,15 @@ namespace SurvivalGrind.Gameplay
 
             AddScore(freezeBlockBonus);
             OnNotification?.Invoke($"FROZE THE THREAT +{freezeBlockBonus}");
+            AudioManager.PlaySfx(scoreSfx);
+        }
+
+        public void RegisterGravityShiftPass()
+        {
+            if (State != LevelState.Playing) return;
+
+            AddScore(gravityShiftPassBonus);
+            OnNotification?.Invoke($"GRAVITY SHIFT +{gravityShiftPassBonus}");
             AudioManager.PlaySfx(scoreSfx);
         }
 
@@ -166,10 +184,7 @@ namespace SurvivalGrind.Gameplay
             AudioManager.PlaySfx(victoryStingerSfx);
             if (victoryPanel != null) victoryPanel.SetActive(true);
 
-            if (SceneManager.GetActiveScene().name == "Level 1")
-            {
-                SurvivalGrind.UI.LevelSelectController.SetUnlockedLevelCount(2);
-            }
+            SurvivalGrind.UI.LevelSelectController.SetUnlockedLevelCount(levelNumber + 1);
         }
 
         public void GameOver()
@@ -211,7 +226,7 @@ namespace SurvivalGrind.Gameplay
         public void GoNextLevel()
         {
             Time.timeScale = 1f;
-            SceneManager.LoadScene("Level 2");
+            SceneManager.LoadScene(nextLevelSceneName);
         }
 
         public void GoHome()

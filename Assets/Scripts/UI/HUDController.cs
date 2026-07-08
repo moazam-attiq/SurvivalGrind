@@ -19,6 +19,10 @@ namespace SurvivalGrind.UI
         [SerializeField] private FreezeAbility freezeAbility;
         [SerializeField] private Image freezeCooldownFill;
 
+        [Header("Gravity Shift Ability (optional)")]
+        [SerializeField] private GravityShiftAbility gravityShiftAbility;
+        [SerializeField] private Image gravityShiftCooldownFill;
+
         private LevelRunner runner;
 
         private void Start()
@@ -48,6 +52,10 @@ namespace SurvivalGrind.UI
             if (freezeAbility != null && freezeCooldownFill != null)
             {
                 freezeCooldownFill.fillAmount = 1f - freezeAbility.CooldownFraction;
+            }
+            if (gravityShiftAbility != null && gravityShiftCooldownFill != null)
+            {
+                gravityShiftCooldownFill.fillAmount = 1f - gravityShiftAbility.CooldownFraction;
             }
         }
 

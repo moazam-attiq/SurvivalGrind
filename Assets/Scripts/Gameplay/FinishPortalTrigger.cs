@@ -13,6 +13,7 @@ namespace SurvivalGrind.Gameplay
 
             var runner = LevelRunner.Instance;
             if (runner == null) return;
+            if (runner.SurvivalTime < runner.SurvivalTarget) return;
 
             triggered = true;
             runner.GoToVictory();

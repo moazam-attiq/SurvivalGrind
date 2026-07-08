@@ -1480,7 +1480,7 @@ MonoBehaviour:
     lockOverlay: {fileID: 2062295519}
     contentGroup: {fileID: 438315}
   - levelNumber: 3
-    sceneName: 
+    sceneName: Level 3
     button: {fileID: 51645028}
     lockOverlay: {fileID: 1586315706}
     contentGroup: {fileID: 1636457231}

@@ -17,6 +17,12 @@ namespace SurvivalGrind.Gameplay
         [Header("Damage")]
         [SerializeField] private int killBatchSize = 10;
 
+        [Header("Idle Visibility")]
+        [SerializeField] private float idleAlpha = 0.35f;
+        [SerializeField] private float idlePulseSpeed = 1.2f;
+        [SerializeField] private float idleGlowIntensity = 1.5f;
+        [SerializeField] private float firingGlowIntensity = 4f;
+
         [Header("Refs")]
         [SerializeField] private SpriteRenderer beamRenderer;
         [SerializeField] private SpriteRenderer warningIndicator;
@@ -44,14 +50,33 @@ namespace SurvivalGrind.Gameplay
             {
                 beamRenderer.enabled = true;
                 beamBaseColor = beamRenderer.color;
-                SetBeamAlpha(0f);
+                SetBeamAlpha(idleAlpha);
             }
             if (warningIndicator != null) warningIndicator.enabled = false;
+            if (beamGlow != null)
+            {
+                beamGlow.enabled = true;
+                beamGlow.intensity = idleGlowIntensity;
+            }
+        }
+
+        private void OnEnable()
+        {
+            CommanderController.OnLoopReset += ResetState;
+        }
+
+        private void OnDisable()
+        {
+            CommanderController.OnLoopReset -= ResetState;
         }
 
         private void Update()
         {
             if (state != State.Idle) return;
+
+            float pulse = (Mathf.Sin(Time.time * idlePulseSpeed) + 1f) * 0.5f;
+            SetBeamAlpha(Mathf.Lerp(idleAlpha * 0.5f, idleAlpha, pulse));
+            if (beamGlow != null) beamGlow.intensity = Mathf.Lerp(idleGlowIntensity * 0.6f, idleGlowIntensity, pulse);
 
             if (commander == null)
             {
@@ -93,16 +118,40 @@ namespace SurvivalGrind.Gameplay
             hitCollider.enabled = true;
             SetBeamAlpha(beamBaseColor.a);
             if (impactVfx != null) impactVfx.Play();
-            if (beamGlow != null) beamGlow.enabled = true;
+            if (beamGlow != null) beamGlow.intensity = firingGlowIntensity;
             if (audioSource != null && audioSource.clip != null) audioSource.Play();
 
             yield return new WaitForSeconds(fireDuration);
 
             state = State.Spent;
             hitCollider.enabled = false;
-            SetBeamAlpha(0f);
+            SetBeamAlpha(idleAlpha);
             if (impactVfx != null) impactVfx.Stop();
-            if (beamGlow != null) beamGlow.enabled = false;
+            if (beamGlow != null) beamGlow.intensity = idleGlowIntensity;
+
+            if (!hitRegistered && !frozenBlockRegistered)
+            {
+                LevelRunner.Instance?.RegisterSafePass();
+            }
+        }
+
+        public void ResetState()
+        {
+            StopAllCoroutines();
+            state = State.Idle;
+            hitRegistered = false;
+            frozenBlockRegistered = false;
+            hitCollider.enabled = false;
+            SetBeamAlpha(idleAlpha);
+            if (warningIndicator != null)
+            {
+                warningIndicator.enabled = false;
+                var c = warningIndicator.color;
+                c.a = 0.3f;
+                warningIndicator.color = c;
+            }
+            if (impactVfx != null) impactVfx.Stop();
+            if (beamGlow != null) beamGlow.intensity = idleGlowIntensity;
         }
 
         private void SetBeamAlpha(float alpha)
