@@ -23,6 +23,13 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private float snapshotTime = 3f;
         [SerializeField] private float loopTriggerTime = 25f;
 
+        [Header("Position Loop (seamless)")]
+        [Tooltip("When enabled, the run hard-snaps back to loopResetPosition the instant the player reaches loopTriggerX. " +
+                 "Meant for a periodic level so the snap is visually undetectable.")]
+        [SerializeField] private bool usePositionLoop = true; // Enabled by default for your seamless loop
+        [SerializeField] private Vector2 loopResetPosition = new Vector2(17.2f, 1.32f); // Vector3(26.8999996, 1.31999993, 0)
+        [SerializeField] private float loopTriggerX = 109.2f; // Vector3(122.400002, 1.31999993, 0)
+
         public static event System.Action OnLoopReset;
 
         [Header("Animation")]
@@ -85,7 +92,19 @@ namespace SurvivalGrind.Gameplay
 
             if (runner != null && runner.State == LevelState.Playing)
             {
-                if (useSnapshotLoop)
+                if (usePositionLoop)
+                {
+                    // Seamless position loop: the instant the player crosses the trigger X, hard-snap
+                    // straight back to the reset position. On a periodic level the camera + crowd snap
+                    // together (via OnLoopReset) so the jump is visually undetectable.
+                    if (transform.position.x >= loopTriggerX)
+                    {
+                        transform.position = new Vector3(loopResetPosition.x, loopResetPosition.y, transform.position.z);
+                        Velocity = Vector3.zero;
+                        OnLoopReset?.Invoke();
+                    }
+                }
+                else if (useSnapshotLoop)
                 {
                     if (!snapshotCaptured && runner.SurvivalTime >= snapshotTime)
                     {
