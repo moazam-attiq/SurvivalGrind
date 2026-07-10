@@ -23,6 +23,11 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private float idleGlowIntensity = 1.5f;
         [SerializeField] private float firingGlowIntensity = 4f;
 
+        [Header("Flicker")]
+        [Tooltip("Organic light-increase/decrease flicker layered on top of the idle and firing glow, like a live power conduit.")]
+        [SerializeField] private float flickerSpeed = 9f;
+        [SerializeField] private float flickerAmount = 0.18f;
+
         [Header("Loop Reset Feel")]
         [Tooltip("How long a mid-fire beam eases back to idle when the time loop resets, instead of hard-cutting.")]
         [SerializeField] private float resetFadeDuration = 0.15f;
@@ -44,9 +49,19 @@ namespace SurvivalGrind.Gameplay
         private bool hitRegistered;
         private bool frozenBlockRegistered;
         private Color beamBaseColor;
+        private float flickerSeed;
+
+        /// Perlin-noise based flicker multiplier, ~1 +/- flickerAmount. Unique phase per instance
+        /// (via flickerSeed) so a row of lasers doesn't flicker in lockstep.
+        private float Flicker()
+        {
+            float n = Mathf.PerlinNoise(flickerSeed, Time.time * flickerSpeed);
+            return 1f + (n - 0.5f) * 2f * flickerAmount;
+        }
 
         private void Awake()
         {
+            flickerSeed = Random.Range(0f, 100f);
             hitCollider = GetComponent<BoxCollider2D>();
             hitCollider.enabled = false;
             if (beamRenderer == null) beamRenderer = GetComponent<SpriteRenderer>();
@@ -79,8 +94,9 @@ namespace SurvivalGrind.Gameplay
             if (state != State.Idle) return;
 
             float pulse = (Mathf.Sin(Time.time * idlePulseSpeed) + 1f) * 0.5f;
-            SetBeamAlpha(Mathf.Lerp(idleAlpha * 0.5f, idleAlpha, pulse));
-            if (beamGlow != null) beamGlow.intensity = Mathf.Lerp(idleGlowIntensity * 0.6f, idleGlowIntensity, pulse);
+            float flicker = Flicker();
+            SetBeamAlpha(Mathf.Lerp(idleAlpha * 0.5f, idleAlpha, pulse) * flicker);
+            if (beamGlow != null) beamGlow.intensity = Mathf.Lerp(idleGlowIntensity * 0.6f, idleGlowIntensity, pulse) * flicker;
 
             if (commander == null)
             {
@@ -120,12 +136,18 @@ namespace SurvivalGrind.Gameplay
             hitRegistered = false;
             if (warningIndicator != null) warningIndicator.enabled = false;
             hitCollider.enabled = true;
-            SetBeamAlpha(beamBaseColor.a);
             if (impactVfx != null) impactVfx.Play();
-            if (beamGlow != null) beamGlow.intensity = firingGlowIntensity;
             if (audioSource != null && audioSource.clip != null) audioSource.Play();
 
-            yield return new WaitForSeconds(fireDuration);
+            float fireElapsed = 0f;
+            while (fireElapsed < fireDuration)
+            {
+                fireElapsed += Time.deltaTime;
+                float flicker = Flicker();
+                SetBeamAlpha(beamBaseColor.a * flicker);
+                if (beamGlow != null) beamGlow.intensity = firingGlowIntensity * flicker;
+                yield return null;
+            }
 
             state = State.Spent;
             hitCollider.enabled = false;
