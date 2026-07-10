@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace SurvivalGrind.Gameplay
 {
@@ -15,13 +16,21 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private GameObject shieldDomeVfx;
         [SerializeField] private GameObject freezeActiveLabel;
 
+        [Header("UI (optional)")]
+        [SerializeField] private Button freezeButton;
+
         private bool isFrozenByAbility;
         private float freezeTimer;
         private float cooldownTimer;
 
-        /// 0 = ready to use, 1 = just used / fully on cooldown.
-        public float CooldownFraction => Mathf.Clamp01(cooldownTimer / cooldown);
+        /// 0 = ready to use, 1 = actively frozen or fully on cooldown.
+        public float CooldownFraction => isFrozenByAbility ? 1f : Mathf.Clamp01(cooldownTimer / cooldown);
         public bool IsReady => cooldownTimer <= 0f && !isFrozenByAbility;
+
+        private void Awake()
+        {
+            if (freezeButton != null) freezeButton.onClick.AddListener(TryActivate);
+        }
 
         private void Update()
         {
@@ -38,13 +47,24 @@ namespace SurvivalGrind.Gameplay
                 cooldownTimer -= Time.deltaTime;
             }
 
+            // The freeze mechanic is only usable until the survival goal is complete.
+            if (freezeButton != null) freezeButton.interactable = !runner.SurvivalComplete;
+
             if (runner.State != LevelState.Playing) return;
 
             bool pressed = Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame;
-            if (pressed && IsReady)
-            {
-                BeginFreeze(runner);
-            }
+            if (pressed) TryActivate();
+        }
+
+        public void TryActivate()
+        {
+            var runner = LevelRunner.Instance;
+            if (runner == null) return;
+            if (runner.State != LevelState.Playing) return;
+            if (runner.SurvivalComplete) return;
+            if (!IsReady) return;
+
+            BeginFreeze(runner);
         }
 
         private void BeginFreeze(LevelRunner runner)

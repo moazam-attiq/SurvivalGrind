@@ -95,8 +95,17 @@ namespace SurvivalGrind.Gameplay
             if (!SurvivalComplete && SurvivalTime >= survivalTarget)
             {
                 SurvivalComplete = true;
-                OnPortalReady?.Invoke();
-                GoToVictory();
+
+                if (AliveCount <= 0)
+                {
+                    // The crowd didn't make it - surviving the clock with nobody left isn't a win.
+                    GameOver();
+                }
+                else
+                {
+                    OnPortalReady?.Invoke();
+                    GoToVictory();
+                }
             }
         }
 

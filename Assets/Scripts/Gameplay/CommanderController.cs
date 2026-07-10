@@ -13,6 +13,16 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private float laneShiftDistance = 6f;
         [SerializeField] private float laneShiftSpeed = 14f;
 
+        [Header("Gravity Lane Control")]
+        [Tooltip("Disable for Freeze-only levels where gravity lanes shouldn't be player-controlled.")]
+        [SerializeField] private bool enableGravityLaneControl = true;
+
+        [Header("Time Loop")]
+        [Tooltip("When enabled, the run rewinds to a snapshot position instead of resetting to spawn on an interval.")]
+        [SerializeField] private bool useSnapshotLoop = false;
+        [SerializeField] private float snapshotTime = 3f;
+        [SerializeField] private float loopTriggerTime = 25f;
+
         public static event System.Action OnLoopReset;
 
         [Header("Animation")]
@@ -35,6 +45,8 @@ namespace SurvivalGrind.Gameplay
         private float spawnX;
         private float spawnY;
         private int lastLoopIndex;
+        private Vector3 snapshotPosition;
+        private bool snapshotCaptured;
 
         private void Awake()
         {
@@ -73,21 +85,43 @@ namespace SurvivalGrind.Gameplay
 
             if (runner != null && runner.State == LevelState.Playing)
             {
-                int currentLoopIndex = Mathf.FloorToInt(runner.SurvivalTime / loopIntervalSeconds);
-                if (currentLoopIndex > lastLoopIndex)
+                if (useSnapshotLoop)
                 {
-                    lastLoopIndex = currentLoopIndex;
-                    Vector3 pos = transform.position;
-                    pos.x = spawnX;
-                    transform.position = pos;
-                    OnLoopReset?.Invoke();
+                    if (!snapshotCaptured && runner.SurvivalTime >= snapshotTime)
+                    {
+                        snapshotCaptured = true;
+                        snapshotPosition = transform.position;
+                    }
+
+                    if (snapshotCaptured)
+                    {
+                        int currentLoopIndex = Mathf.FloorToInt(runner.SurvivalTime / loopTriggerTime);
+                        if (currentLoopIndex > lastLoopIndex)
+                        {
+                            lastLoopIndex = currentLoopIndex;
+                            transform.position = snapshotPosition;
+                            OnLoopReset?.Invoke();
+                        }
+                    }
+                }
+                else
+                {
+                    int currentLoopIndex = Mathf.FloorToInt(runner.SurvivalTime / loopIntervalSeconds);
+                    if (currentLoopIndex > lastLoopIndex)
+                    {
+                        lastLoopIndex = currentLoopIndex;
+                        Vector3 pos = transform.position;
+                        pos.x = spawnX;
+                        transform.position = pos;
+                        OnLoopReset?.Invoke();
+                    }
                 }
             }
 
             if (runner != null)
             {
                 GravityLane lane = GravityLane.Ground;
-                if (canMove && Keyboard.current != null)
+                if (enableGravityLaneControl && canMove && Keyboard.current != null)
                 {
                     if (Keyboard.current.upArrowKey.isPressed) lane = GravityLane.Upper;
                     else if (Keyboard.current.downArrowKey.isPressed) lane = GravityLane.Lower;
