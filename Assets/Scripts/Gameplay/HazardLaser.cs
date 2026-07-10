@@ -23,6 +23,10 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private float idleGlowIntensity = 1.5f;
         [SerializeField] private float firingGlowIntensity = 4f;
 
+        [Header("Loop Reset Feel")]
+        [Tooltip("How long a mid-fire beam eases back to idle when the time loop resets, instead of hard-cutting.")]
+        [SerializeField] private float resetFadeDuration = 0.15f;
+
         [Header("Refs")]
         [SerializeField] private SpriteRenderer beamRenderer;
         [SerializeField] private SpriteRenderer warningIndicator;
@@ -137,12 +141,12 @@ namespace SurvivalGrind.Gameplay
 
         public void ResetState()
         {
+            bool wasActive = state == State.Warning || state == State.Firing;
             StopAllCoroutines();
             state = State.Idle;
             hitRegistered = false;
             frozenBlockRegistered = false;
             hitCollider.enabled = false;
-            SetBeamAlpha(idleAlpha);
             if (warningIndicator != null)
             {
                 warningIndicator.enabled = false;
@@ -151,6 +155,34 @@ namespace SurvivalGrind.Gameplay
                 warningIndicator.color = c;
             }
             if (impactVfx != null) impactVfx.Stop();
+
+            // A beam caught mid-fire eases back to idle instead of hard-cutting, so the
+            // time-loop reset doesn't read as a jarring flash.
+            if (wasActive && gameObject.activeInHierarchy)
+            {
+                StartCoroutine(FadeToIdle());
+            }
+            else
+            {
+                SetBeamAlpha(idleAlpha);
+                if (beamGlow != null) beamGlow.intensity = idleGlowIntensity;
+            }
+        }
+
+        private IEnumerator FadeToIdle()
+        {
+            float startAlpha = beamRenderer != null ? beamRenderer.color.a : idleAlpha;
+            float startGlow = beamGlow != null ? beamGlow.intensity : idleGlowIntensity;
+            float elapsed = 0f;
+            while (elapsed < resetFadeDuration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / resetFadeDuration;
+                SetBeamAlpha(Mathf.Lerp(startAlpha, idleAlpha, t));
+                if (beamGlow != null) beamGlow.intensity = Mathf.Lerp(startGlow, idleGlowIntensity, t);
+                yield return null;
+            }
+            SetBeamAlpha(idleAlpha);
             if (beamGlow != null) beamGlow.intensity = idleGlowIntensity;
         }
 
