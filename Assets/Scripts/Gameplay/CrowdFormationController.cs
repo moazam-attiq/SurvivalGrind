@@ -29,6 +29,8 @@ namespace SurvivalGrind.Gameplay
         [Header("Freeze Reaction")]
         [SerializeField] private float flinchScale = 1.15f;
         [SerializeField] private float flinchDuration = 0.2f;
+        [Tooltip("Full-body tint applied to every member while shielded by Freeze.")]
+        [SerializeField] private Color freezeTintColor = new Color(0.35f, 0.65f, 1f, 1f);
 
         public float BackRowDistance { get; private set; }
         public Vector3 FormationCenter { get; private set; }
@@ -43,6 +45,7 @@ namespace SurvivalGrind.Gameplay
             public float swayPhase;
             public float smoothTime;
             public bool dying;
+            public Color baseColor;
         }
 
         private readonly List<CrowdMember> active = new List<CrowdMember>();
@@ -115,6 +118,7 @@ namespace SurvivalGrind.Gameplay
                 swayPhase = Random.Range(0f, Mathf.PI * 2f),
                 smoothTime = baseSmoothTime + Random.Range(-smoothTimeVariance, smoothTimeVariance)
             };
+            member.baseColor = member.sr != null ? member.sr.color : Color.white;
             go.transform.position = commander != null
                 ? commander.position + GetSlotOffset(slotIndex)
                 : GetSlotOffset(slotIndex);
@@ -164,12 +168,11 @@ namespace SurvivalGrind.Gameplay
                 Vector3 target = commander.position + GetSlotOffset(i);
                 target.y += Mathf.Sin(Time.time * swaySpeed + m.swayPhase) * swayAmount;
 
-                if (!isFrozen)
-                {
-                    m.t.position = Vector3.SmoothDamp(m.t.position, target, ref m.velocity, m.smoothTime);
-                }
+                // Freeze is a shield, not a stop -- the team keeps following through the hazard.
+                m.t.position = Vector3.SmoothDamp(m.t.position, target, ref m.velocity, m.smoothTime);
 
                 m.t.localScale = Vector3.one * flinchFactor;
+                if (m.sr != null) m.sr.color = isFrozen ? freezeTintColor : m.baseColor;
 
                 float depth = -GetSlotOffset(i).x;
                 if (depth > maxRowDepth) maxRowDepth = depth;

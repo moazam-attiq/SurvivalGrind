@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -19,9 +20,21 @@ namespace SurvivalGrind.Gameplay
         [Header("UI (optional)")]
         [SerializeField] private Button freezeButton;
 
+        [Header("Denied Feedback")]
+        [Tooltip("Shake + red flash shown on the button when F is pressed but the ability isn't ready yet, " +
+                 "so a mistimed press near a hazard is obvious instead of silently doing nothing.")]
+        [SerializeField] private float deniedShakeDuration = 0.25f;
+        [SerializeField] private float deniedShakeStrength = 8f;
+        [SerializeField] private Color deniedFlashColor = new Color(1f, 0.25f, 0.25f, 1f);
+
         private bool isFrozenByAbility;
         private float freezeTimer;
         private float cooldownTimer;
+        private Image freezeButtonImage;
+        private RectTransform freezeButtonRect;
+        private Color freezeButtonNormalColor;
+        private Vector2 freezeButtonBasePos;
+        private Coroutine deniedRoutine;
 
         /// 0 = ready to use, 1 = actively frozen or fully on cooldown.
         public float CooldownFraction => isFrozenByAbility ? 1f : Mathf.Clamp01(cooldownTimer / cooldown);
@@ -29,7 +42,14 @@ namespace SurvivalGrind.Gameplay
 
         private void Awake()
         {
-            if (freezeButton != null) freezeButton.onClick.AddListener(TryActivate);
+            if (freezeButton != null)
+            {
+                freezeButton.onClick.AddListener(TryActivate);
+                freezeButtonImage = freezeButton.targetGraphic as Image;
+                if (freezeButtonImage != null) freezeButtonNormalColor = freezeButtonImage.color;
+                freezeButtonRect = freezeButton.GetComponent<RectTransform>();
+                if (freezeButtonRect != null) freezeButtonBasePos = freezeButtonRect.anchoredPosition;
+            }
         }
 
         private void Update()
@@ -62,9 +82,48 @@ namespace SurvivalGrind.Gameplay
             if (runner == null) return;
             if (runner.State != LevelState.Playing) return;
             if (runner.SurvivalComplete) return;
-            if (!IsReady) return;
 
+            if (isFrozenByAbility)
+            {
+                // Pressing F again while still frozen cancels the shield early --
+                // the cooldown circle resets to empty and starts refilling from 0 right away,
+                // instead of waiting out the rest of the freeze duration first.
+                EndFreeze(runner);
+                return;
+            }
+
+            if (!IsReady)
+            {
+                ShowDenied();
+                return;
+            }
             BeginFreeze(runner);
+        }
+
+        private void ShowDenied()
+        {
+            if (freezeButton == null) return;
+            if (deniedRoutine != null) StopCoroutine(deniedRoutine);
+            deniedRoutine = StartCoroutine(DeniedFeedback());
+        }
+
+        private IEnumerator DeniedFeedback()
+        {
+            float elapsed = 0f;
+            while (elapsed < deniedShakeDuration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float t = elapsed / deniedShakeDuration;
+                if (freezeButtonImage != null) freezeButtonImage.color = Color.Lerp(deniedFlashColor, freezeButtonNormalColor, t);
+                if (freezeButtonRect != null)
+                {
+                    float shake = Mathf.Sin(t * Mathf.PI * 8f) * deniedShakeStrength * (1f - t);
+                    freezeButtonRect.anchoredPosition = freezeButtonBasePos + new Vector2(shake, 0f);
+                }
+                yield return null;
+            }
+            if (freezeButtonImage != null) freezeButtonImage.color = freezeButtonNormalColor;
+            if (freezeButtonRect != null) freezeButtonRect.anchoredPosition = freezeButtonBasePos;
         }
 
         private void BeginFreeze(LevelRunner runner)
