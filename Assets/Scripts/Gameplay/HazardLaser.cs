@@ -28,6 +28,18 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private float flickerSpeed = 9f;
         [SerializeField] private float flickerAmount = 0.18f;
 
+        [Header("Idle Strobe")]
+        [Tooltip("How long the laser sits on its soft idle glow before it starts hard on/off strobing.")]
+        [SerializeField] private float strobeDelay = 2f;
+        [Tooltip("Seconds per strobe phase (on, then off).")]
+        [SerializeField] private float strobeInterval = 0.35f;
+        [Tooltip("Alpha during the strobe 'off' phase -- reads as essentially black.")]
+        [SerializeField] private float strobeOffAlpha = 0.03f;
+
+        [Header("Firing Color")]
+        [Tooltip("Saturated, prominent red used while the beam is actually live/dangerous.")]
+        [SerializeField] private Color firingColor = new Color(1f, 0.16f, 0.12f, 1f);
+
         [Header("Loop Reset Feel")]
         [Tooltip("How long a mid-fire beam eases back to idle when the time loop resets, instead of hard-cutting.")]
         [SerializeField] private float resetFadeDuration = 0.15f;
@@ -50,6 +62,7 @@ namespace SurvivalGrind.Gameplay
         private bool frozenBlockRegistered;
         private Color beamBaseColor;
         private float flickerSeed;
+        private float idleElapsed;
 
         /// Perlin-noise based flicker multiplier, ~1 +/- flickerAmount. Unique phase per instance
         /// (via flickerSeed) so a row of lasers doesn't flicker in lockstep.
@@ -93,10 +106,23 @@ namespace SurvivalGrind.Gameplay
         {
             if (state != State.Idle) return;
 
-            float pulse = (Mathf.Sin(Time.time * idlePulseSpeed) + 1f) * 0.5f;
+            idleElapsed += Time.deltaTime;
             float flicker = Flicker();
-            SetBeamAlpha(Mathf.Lerp(idleAlpha * 0.5f, idleAlpha, pulse) * flicker);
-            if (beamGlow != null) beamGlow.intensity = Mathf.Lerp(idleGlowIntensity * 0.6f, idleGlowIntensity, pulse) * flicker;
+
+            if (idleElapsed < strobeDelay)
+            {
+                // Soft breathing glow for the first couple seconds after (re)arming.
+                float pulse = (Mathf.Sin(Time.time * idlePulseSpeed) + 1f) * 0.5f;
+                SetBeamAlpha(Mathf.Lerp(idleAlpha * 0.5f, idleAlpha, pulse) * flicker);
+                if (beamGlow != null) beamGlow.intensity = Mathf.Lerp(idleGlowIntensity * 0.6f, idleGlowIntensity, pulse) * flicker;
+            }
+            else
+            {
+                // Hard on/off strobe: bright pulse, then essentially black, repeating.
+                bool on = Mathf.FloorToInt((idleElapsed - strobeDelay) / strobeInterval) % 2 == 0;
+                SetBeamAlpha((on ? idleAlpha : strobeOffAlpha) * flicker);
+                if (beamGlow != null) beamGlow.intensity = on ? idleGlowIntensity * flicker : 0f;
+            }
 
             if (commander == null)
             {
@@ -118,6 +144,8 @@ namespace SurvivalGrind.Gameplay
             AudioManager.PlaySfx(warningSirenClip);
             frozenBlockRegistered = false;
 
+            // Subtle telegraph -- a faint flutter rather than an obvious dramatic build-up,
+            // so the warning barely announces itself ahead of the strike.
             float elapsed = 0f;
             while (elapsed < warningDuration)
             {
@@ -126,7 +154,7 @@ namespace SurvivalGrind.Gameplay
                 {
                     float pulse = (Mathf.Sin(elapsed * 12f) + 1f) * 0.5f;
                     var c = warningIndicator.color;
-                    c.a = Mathf.Lerp(0.3f, 0.9f, pulse);
+                    c.a = Mathf.Lerp(0.55f, 0.7f, pulse);
                     warningIndicator.color = c;
                 }
                 yield return null;
@@ -144,7 +172,7 @@ namespace SurvivalGrind.Gameplay
             {
                 fireElapsed += Time.deltaTime;
                 float flicker = Flicker();
-                SetBeamAlpha(beamBaseColor.a * flicker);
+                SetFiringColor(Mathf.Clamp01(flicker));
                 if (beamGlow != null) beamGlow.intensity = firingGlowIntensity * flicker;
                 yield return null;
             }
@@ -166,6 +194,7 @@ namespace SurvivalGrind.Gameplay
             bool wasActive = state == State.Warning || state == State.Firing;
             StopAllCoroutines();
             state = State.Idle;
+            idleElapsed = 0f;
             hitRegistered = false;
             frozenBlockRegistered = false;
             hitCollider.enabled = false;
@@ -212,6 +241,14 @@ namespace SurvivalGrind.Gameplay
         {
             if (beamRenderer == null) return;
             var c = beamBaseColor;
+            c.a = alpha;
+            beamRenderer.color = c;
+        }
+
+        private void SetFiringColor(float alpha)
+        {
+            if (beamRenderer == null) return;
+            var c = firingColor;
             c.a = alpha;
             beamRenderer.color = c;
         }

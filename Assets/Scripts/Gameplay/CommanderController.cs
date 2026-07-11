@@ -25,10 +25,11 @@ namespace SurvivalGrind.Gameplay
 
         [Header("Position Loop (seamless)")]
         [Tooltip("When enabled, the run hard-snaps back to loopResetPosition the instant the player reaches loopTriggerX. " +
-                 "Meant for a periodic level so the snap is visually undetectable.")]
-        [SerializeField] private bool usePositionLoop = true; // Enabled by default for your seamless loop
-        [SerializeField] private Vector2 loopResetPosition = new Vector2(17.2f, 1.32f); // Vector3(26.8999996, 1.31999993, 0)
-        [SerializeField] private float loopTriggerX = 109.2f; // Vector3(122.400002, 1.31999993, 0)
+                 "Meant for a periodic level so the snap is visually undetectable. Keep loopResetPosition.x safely " +
+                 "before the first hazard's warning zone (hazard.x - triggerDistance), never on top of or past it.")]
+        [SerializeField] private bool usePositionLoop = true;
+        [SerializeField] private Vector2 loopResetPosition = new Vector2(6f, -0.6f);
+        [SerializeField] private float loopTriggerX = 122.6f;
 
         public static event System.Action OnLoopReset;
 
@@ -44,6 +45,10 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private float glowMinAlpha = 0.35f;
         [SerializeField] private float glowMaxAlpha = 0.65f;
 
+        [Header("Freeze Visual")]
+        [Tooltip("Full-body tint applied while shielded by Freeze, so it's unmistakable the team is invulnerable.")]
+        [SerializeField] private Color freezeTintColor = new Color(0.35f, 0.65f, 1f, 1f);
+
         public Vector3 Velocity { get; private set; }
         public bool IsMoving { get; private set; }
 
@@ -54,19 +59,22 @@ namespace SurvivalGrind.Gameplay
         private int lastLoopIndex;
         private Vector3 snapshotPosition;
         private bool snapshotCaptured;
+        private Color normalBodyColor;
 
         private void Awake()
         {
             baseScale = transform.localScale;
             spawnX = transform.position.x;
             spawnY = transform.position.y;
+            if (bodyRenderer != null) normalBodyColor = bodyRenderer.color;
         }
 
         private void Update()
         {
             var runner = LevelRunner.Instance;
             bool isFrozen = runner != null && runner.IsFrozen;
-            bool canMove = runner != null && runner.State == LevelState.Playing && !isFrozen;
+            // Freeze is a shield, not a stop -- the team keeps running through the hazard while invulnerable.
+            bool canMove = runner != null && runner.State == LevelState.Playing;
 
             float speedMultiplier = 1f;
             if (canMove && Keyboard.current != null)
@@ -162,6 +170,11 @@ namespace SurvivalGrind.Gameplay
             float bobAmount = canMove ? runBobAmount : idleBobAmount;
             float bob = Mathf.Sin(animTime) * bobAmount;
             transform.localScale = new Vector3(baseScale.x, baseScale.y * (1f + bob), baseScale.z);
+
+            if (bodyRenderer != null)
+            {
+                bodyRenderer.color = isFrozen ? freezeTintColor : normalBodyColor;
+            }
 
             if (glowRenderer != null)
             {
