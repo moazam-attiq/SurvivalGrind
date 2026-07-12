@@ -36,6 +36,8 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private float scrollSpeed = 4f;
         [SerializeField] private int freezeBlockBonus = 40;
         [SerializeField] private int gravityShiftPassBonus = 40;
+        [Tooltip("If the crowd is wiped out but the Commander survives to the timer, a score at or above this still counts as a win instead of a defeat.")]
+        [SerializeField] private int minScoreToSurviveWithoutCrowd = 100;
 
         [Header("Progression")]
         [SerializeField] private string nextLevelSceneName = "Level 2";
@@ -96,13 +98,14 @@ namespace SurvivalGrind.Gameplay
             {
                 SurvivalComplete = true;
 
-                if (AliveCount <= 0)
+                if (AliveCount <= 0 && Score < minScoreToSurviveWithoutCrowd)
                 {
-                    // The crowd didn't make it - surviving the clock with nobody left isn't a win.
+                    // The crowd didn't make it and the score doesn't make up for it - not a win.
                     GameOver();
                 }
                 else
                 {
+                    // Either the crowd made it, or the Commander survived alone with a decent score.
                     OnPortalReady?.Invoke();
                     GoToVictory();
                 }
