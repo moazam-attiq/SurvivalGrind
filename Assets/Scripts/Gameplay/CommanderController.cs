@@ -9,7 +9,6 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private float forwardSpeed = 4.5f;
         [SerializeField] private float nudgeSpeedUpMultiplier = 1.4f;
         [SerializeField] private float nudgeSlowDownMultiplier = 0.55f;
-        [SerializeField] private float loopIntervalSeconds = 30f;
         [SerializeField] private float laneShiftDistance = 6f;
         [SerializeField] private float laneShiftSpeed = 14f;
 
@@ -131,18 +130,7 @@ namespace SurvivalGrind.Gameplay
                         }
                     }
                 }
-                else
-                {
-                    int currentLoopIndex = Mathf.FloorToInt(runner.SurvivalTime / loopIntervalSeconds);
-                    if (currentLoopIndex > lastLoopIndex)
-                    {
-                        lastLoopIndex = currentLoopIndex;
-                        Vector3 pos = transform.position;
-                        pos.x = spawnX;
-                        transform.position = pos;
-                        OnLoopReset?.Invoke();
-                    }
-                }
+                // else: neither loop mode is enabled -- run straight through with no periodic reset.
             }
 
             if (runner != null)
