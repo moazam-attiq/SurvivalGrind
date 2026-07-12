@@ -19,6 +19,10 @@ namespace SurvivalGrind.UI
         [SerializeField] private FreezeAbility freezeAbility;
         [SerializeField] private Image freezeCooldownFill;
 
+        [Header("Shield Dome Ability (optional)")]
+        [SerializeField] private ShieldDomeAbility shieldDomeAbility;
+        [SerializeField] private Image shieldDomeCooldownFill;
+
         [Header("Gravity Shift Ability (optional)")]
         [SerializeField] private GravityShiftAbility gravityShiftAbility;
         [SerializeField] private Image gravityShiftCooldownFill;
@@ -52,6 +56,10 @@ namespace SurvivalGrind.UI
             if (freezeAbility != null && freezeCooldownFill != null)
             {
                 freezeCooldownFill.fillAmount = 1f - freezeAbility.CooldownFraction;
+            }
+            if (shieldDomeAbility != null && shieldDomeCooldownFill != null)
+            {
+                shieldDomeCooldownFill.fillAmount = 1f - shieldDomeAbility.CooldownFraction;
             }
             if (gravityShiftAbility != null && gravityShiftCooldownFill != null)
             {

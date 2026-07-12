@@ -17,6 +17,10 @@ namespace SurvivalGrind.Gameplay
         [Header("Damage")]
         [SerializeField] private int killBatchSize = 10;
 
+        [Header("Shield Block Feedback")]
+        [Tooltip("Notification text shown when the Shield/Freeze ability blocks this hazard. Lets each hazard flavor (bomb/spike/aerial) say something distinct.")]
+        [SerializeField] private string blockNotificationLabel = "FROZE THE THREAT";
+
         [Header("Idle Visibility")]
         [SerializeField] private float idleAlpha = 0.35f;
         [SerializeField] private float idlePulseSpeed = 1.2f;
@@ -50,6 +54,8 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private ParticleSystem impactVfx;
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private UnityEngine.Rendering.Universal.Light2D beamGlow;
+        [Tooltip("Optional sprite flipbook (e.g. explosion/shot-hit frames) played on top of impactVfx while firing, for a more distinct hazard-type look.")]
+        [SerializeField] private SpriteFlipbook impactFlipbook;
 
         [Header("Audio")]
         [SerializeField] private AudioClip warningSirenClip;
@@ -165,6 +171,7 @@ namespace SurvivalGrind.Gameplay
             if (warningIndicator != null) warningIndicator.enabled = false;
             hitCollider.enabled = true;
             if (impactVfx != null) impactVfx.Play();
+            if (impactFlipbook != null) impactFlipbook.Play();
             if (audioSource != null && audioSource.clip != null) audioSource.Play();
 
             float fireElapsed = 0f;
@@ -265,7 +272,7 @@ namespace SurvivalGrind.Gameplay
             {
                 if (frozenBlockRegistered) return;
                 frozenBlockRegistered = true;
-                runner.RegisterFreezeBlock();
+                runner.RegisterFreezeBlock(blockNotificationLabel);
                 AudioManager.PlaySfx(freezeBlockClip);
                 return;
             }
