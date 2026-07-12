@@ -144,12 +144,12 @@ namespace SurvivalGrind.Gameplay
             AudioManager.PlaySfx(scoreSfx);
         }
 
-        public void RegisterFreezeBlock()
+        public void RegisterFreezeBlock(string label = "FROZE THE THREAT")
         {
             if (State != LevelState.Playing) return;
 
             AddScore(freezeBlockBonus);
-            OnNotification?.Invoke($"FROZE THE THREAT +{freezeBlockBonus}");
+            OnNotification?.Invoke($"{label} +{freezeBlockBonus}");
             AudioManager.PlaySfx(scoreSfx);
         }
 
