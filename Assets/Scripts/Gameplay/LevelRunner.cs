@@ -38,6 +38,8 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private int gravityShiftPassBonus = 40;
         [Tooltip("If the crowd is wiped out but the Commander survives to the timer, a score at or above this still counts as a win instead of a defeat.")]
         [SerializeField] private int minScoreToSurviveWithoutCrowd = 100;
+        [Tooltip("When enabled, reaching the timer always requires Score >= minScoreToSurviveWithoutCrowd to win, even if the crowd is still fully alive.")]
+        [SerializeField] private bool requireMinScoreToWin = false;
 
         [Header("Progression")]
         [SerializeField] private string nextLevelSceneName = "Level 2";
@@ -98,9 +100,11 @@ namespace SurvivalGrind.Gameplay
             {
                 SurvivalComplete = true;
 
-                if (AliveCount <= 0 && Score < minScoreToSurviveWithoutCrowd)
+                bool scoreTooLow = Score < minScoreToSurviveWithoutCrowd;
+                if ((requireMinScoreToWin && scoreTooLow) || (AliveCount <= 0 && scoreTooLow))
                 {
-                    // The crowd didn't make it and the score doesn't make up for it - not a win.
+                    // Either this level always requires the score threshold, or the crowd
+                    // didn't make it and the score doesn't make up for it - not a win.
                     GameOver();
                 }
                 else

@@ -454,6 +454,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -470,6 +471,7 @@ MonoBehaviour:
   impactVfx: {fileID: 758238473}
   audioSource: {fileID: 19909499}
   beamGlow: {fileID: 9785681}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &19909499
@@ -12751,6 +12753,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -12767,6 +12770,7 @@ MonoBehaviour:
   impactVfx: {fileID: 487644162}
   audioSource: {fileID: 121838915}
   beamGlow: {fileID: 1572498239}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &121838915
@@ -30114,6 +30118,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -30130,6 +30135,7 @@ MonoBehaviour:
   impactVfx: {fileID: 148917430}
   audioSource: {fileID: 153877352}
   beamGlow: {fileID: 731573565}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &153877352
@@ -35696,6 +35702,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -35712,6 +35719,7 @@ MonoBehaviour:
   impactVfx: {fileID: 854156002}
   audioSource: {fileID: 197678000}
   beamGlow: {fileID: 1427380483}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &197678000
@@ -36665,6 +36673,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -36681,6 +36690,7 @@ MonoBehaviour:
   impactVfx: {fileID: 1669885949}
   audioSource: {fileID: 231257318}
   beamGlow: {fileID: 2058917911}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &231257318
@@ -37573,6 +37583,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -37589,6 +37600,7 @@ MonoBehaviour:
   impactVfx: {fileID: 798776948}
   audioSource: {fileID: 262905558}
   beamGlow: {fileID: 1107144486}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &262905558
@@ -72420,6 +72432,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -72436,6 +72449,7 @@ MonoBehaviour:
   impactVfx: {fileID: 893145139}
   audioSource: {fileID: 567184634}
   beamGlow: {fileID: 1534307689}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &567184634
@@ -88005,6 +88019,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -88021,6 +88036,7 @@ MonoBehaviour:
   impactVfx: {fileID: 333034318}
   audioSource: {fileID: 747533278}
   beamGlow: {fileID: 865009025}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &747533278
@@ -93179,6 +93195,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -93195,6 +93212,7 @@ MonoBehaviour:
   impactVfx: {fileID: 1413488065}
   audioSource: {fileID: 761719508}
   beamGlow: {fileID: 410144564}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &761719508
@@ -94043,6 +94061,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -94059,6 +94078,7 @@ MonoBehaviour:
   impactVfx: {fileID: 2070372791}
   audioSource: {fileID: 777023901}
   beamGlow: {fileID: 32395005}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &777023901
@@ -94499,6 +94519,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -94515,6 +94536,7 @@ MonoBehaviour:
   impactVfx: {fileID: 1856059741}
   audioSource: {fileID: 785619231}
   beamGlow: {fileID: 595821711}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &785619231
@@ -99817,6 +99839,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -99833,6 +99856,7 @@ MonoBehaviour:
   impactVfx: {fileID: 99315283}
   audioSource: {fileID: 800012564}
   beamGlow: {fileID: 1033775413}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &800012564
@@ -111125,6 +111149,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -111141,6 +111166,7 @@ MonoBehaviour:
   impactVfx: {fileID: 318411010}
   audioSource: {fileID: 888022457}
   beamGlow: {fileID: 162426136}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &888022457
@@ -116593,6 +116619,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -116609,6 +116636,7 @@ MonoBehaviour:
   impactVfx: {fileID: 304604625}
   audioSource: {fileID: 917469056}
   beamGlow: {fileID: 1169056861}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &917469056
@@ -129714,6 +129742,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -129730,6 +129759,7 @@ MonoBehaviour:
   impactVfx: {fileID: 917681032}
   audioSource: {fileID: 1075671167}
   beamGlow: {fileID: 1756300850}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1075671167
@@ -132763,6 +132793,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -132779,6 +132810,7 @@ MonoBehaviour:
   impactVfx: {fileID: 2082832234}
   audioSource: {fileID: 1144802667}
   beamGlow: {fileID: 956760712}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1144802667
@@ -135428,6 +135460,8 @@ MonoBehaviour:
   survivalTimerBar: {fileID: 2046254872}
   freezeAbility: {fileID: 1510398885}
   freezeCooldownFill: {fileID: 1065236931}
+  shieldDomeAbility: {fileID: 0}
+  shieldDomeCooldownFill: {fileID: 0}
   gravityShiftAbility: {fileID: 0}
   gravityShiftCooldownFill: {fileID: 0}
 --- !u!1 &1197019983
@@ -149127,6 +149161,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -149143,6 +149178,7 @@ MonoBehaviour:
   impactVfx: {fileID: 1939767090}
   audioSource: {fileID: 1308369153}
   beamGlow: {fileID: 661076882}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1308369153
@@ -149657,6 +149693,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -149673,6 +149710,7 @@ MonoBehaviour:
   impactVfx: {fileID: 124253520}
   audioSource: {fileID: 1332940969}
   beamGlow: {fileID: 2120327110}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1332940969
@@ -158685,6 +158723,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -158701,6 +158740,7 @@ MonoBehaviour:
   impactVfx: {fileID: 1984386880}
   audioSource: {fileID: 1472973974}
   beamGlow: {fileID: 290178985}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1472973974
@@ -159592,6 +159632,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -159608,6 +159649,7 @@ MonoBehaviour:
   impactVfx: {fileID: 29038210}
   audioSource: {fileID: 1507135510}
   beamGlow: {fileID: 627125694}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1507135510
@@ -159868,6 +159910,7 @@ MonoBehaviour:
   freezeBlockBonus: 40
   gravityShiftPassBonus: 40
   minScoreToSurviveWithoutCrowd: 100
+  requireMinScoreToWin: 0
   nextLevelSceneName: Level 2
   levelNumber: 1
   victoryPanel: {fileID: 568154335}
@@ -159974,6 +160017,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -159990,6 +160034,7 @@ MonoBehaviour:
   impactVfx: {fileID: 1796353073}
   audioSource: {fileID: 1510703556}
   beamGlow: {fileID: 136995475}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1510703556
@@ -162064,6 +162109,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -162080,6 +162126,7 @@ MonoBehaviour:
   impactVfx: {fileID: 157419900}
   audioSource: {fileID: 1517476873}
   beamGlow: {fileID: 792847738}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1517476873
@@ -162856,6 +162903,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -162872,6 +162920,7 @@ MonoBehaviour:
   impactVfx: {fileID: 2141942672}
   audioSource: {fileID: 1535750694}
   beamGlow: {fileID: 1965309008}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1535750694
@@ -165698,6 +165747,10 @@ PrefabInstance:
       value: 122.6
       objectReference: {fileID: 0}
     - target: {fileID: 7198662181756562314, guid: d0fe0757955c35e4c88f85e5e47da1bc, type: 3}
+      propertyPath: permanentGlow
+      value: 
+      objectReference: {fileID: 1600897036}
+    - target: {fileID: 7198662181756562314, guid: d0fe0757955c35e4c88f85e5e47da1bc, type: 3}
       propertyPath: usePositionLoop
       value: 0
       objectReference: {fileID: 0}
@@ -165789,6 +165842,11 @@ PrefabInstance:
 --- !u!4 &1600897035 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8989717878670260259, guid: d0fe0757955c35e4c88f85e5e47da1bc, type: 3}
+  m_PrefabInstance: {fileID: 1600897034}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1600897036 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7482764661138909106, guid: d0fe0757955c35e4c88f85e5e47da1bc, type: 3}
   m_PrefabInstance: {fileID: 1600897034}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1603260864
@@ -178194,6 +178252,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -178210,6 +178269,7 @@ MonoBehaviour:
   impactVfx: {fileID: 1039344065}
   audioSource: {fileID: 1682385963}
   beamGlow: {fileID: 1664371304}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1682385963
@@ -179367,6 +179427,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -179383,6 +179444,7 @@ MonoBehaviour:
   impactVfx: {fileID: 1268538861}
   audioSource: {fileID: 1724257310}
   beamGlow: {fileID: 161335544}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1724257310
@@ -193635,6 +193697,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -193651,6 +193714,7 @@ MonoBehaviour:
   impactVfx: {fileID: 306157087}
   audioSource: {fileID: 1865851900}
   beamGlow: {fileID: 369560657}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1865851900
@@ -193909,6 +193973,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -193925,6 +193990,7 @@ MonoBehaviour:
   impactVfx: {fileID: 813331521}
   audioSource: {fileID: 1869915049}
   beamGlow: {fileID: 1729103166}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1869915049
@@ -203424,6 +203490,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -203440,6 +203507,7 @@ MonoBehaviour:
   impactVfx: {fileID: 673305752}
   audioSource: {fileID: 1932820628}
   beamGlow: {fileID: 33270351}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1932820628
@@ -216276,6 +216344,7 @@ MonoBehaviour:
   warningDuration: 1.2
   fireDuration: 1
   killBatchSize: 10
+  blockNotificationLabel: FROZE THE THREAT
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
   idleGlowIntensity: 0.9
@@ -216292,6 +216361,7 @@ MonoBehaviour:
   impactVfx: {fileID: 713944399}
   audioSource: {fileID: 1995500416}
   beamGlow: {fileID: 2001145852}
+  impactFlipbook: {fileID: 0}
   warningSirenClip: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
   freezeBlockClip: {fileID: 8300000, guid: cc94da6c3a6d5d44cb1448b7d9a589c8, type: 3}
 --- !u!82 &1995500416

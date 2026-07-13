@@ -34,16 +34,13 @@ namespace SurvivalGrind.Gameplay
 
         [Header("Animation")]
         [SerializeField] private SpriteRenderer bodyRenderer;
-        [SerializeField] private Transform glowTransform;
-        [SerializeField] private SpriteRenderer glowRenderer;
+        [Tooltip("Static neon glow child (e.g. LeaderGlow) that used to render permanently. Hidden by default now -- " +
+                 "ShieldDomeAbility reuses this same object, expanding it into the visible dome only while S is held.")]
+        [SerializeField] private GameObject permanentGlow;
         [SerializeField] private float idleBobSpeed = 2f;
         [SerializeField] private float idleBobAmount = 0.03f;
         [SerializeField] private float runBobSpeed = 10f;
         [SerializeField] private float runBobAmount = 0.08f;
-        [SerializeField] private float glowPulseSpeed = 1.5f;
-        [SerializeField] private float glowMinAlpha = 0.35f;
-        [SerializeField] private float glowMaxAlpha = 0.65f;
-
         [Header("Freeze Visual")]
         [Tooltip("Full-body tint applied while shielded by Freeze, so it's unmistakable the team is invulnerable.")]
         [SerializeField] private Color freezeTintColor = new Color(0.35f, 0.65f, 1f, 1f);
@@ -66,6 +63,7 @@ namespace SurvivalGrind.Gameplay
             spawnX = transform.position.x;
             spawnY = transform.position.y;
             if (bodyRenderer != null) normalBodyColor = bodyRenderer.color;
+            if (permanentGlow != null) permanentGlow.SetActive(false);
         }
 
         private void Update()
@@ -162,20 +160,6 @@ namespace SurvivalGrind.Gameplay
             if (bodyRenderer != null)
             {
                 bodyRenderer.color = isFrozen ? freezeTintColor : normalBodyColor;
-            }
-
-            if (glowRenderer != null)
-            {
-                float pulseT = (Mathf.Sin(Time.time * glowPulseSpeed) + 1f) * 0.5f;
-                float targetAlpha = isFrozen ? glowMinAlpha : Mathf.Lerp(glowMinAlpha, glowMaxAlpha, pulseT);
-                var c = glowRenderer.color;
-                c.a = targetAlpha;
-                glowRenderer.color = c;
-            }
-            if (glowTransform != null)
-            {
-                float scalePulse = 1f + Mathf.Sin(Time.time * glowPulseSpeed) * 0.05f;
-                glowTransform.localScale = new Vector3(3f * scalePulse, 3f * scalePulse, 1f);
             }
         }
     }
