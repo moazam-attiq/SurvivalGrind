@@ -15,6 +15,10 @@ namespace SurvivalGrind.Gameplay
         [Header("Gravity Lane Control")]
         [Tooltip("Disable for Freeze-only levels where gravity lanes shouldn't be player-controlled.")]
         [SerializeField] private bool enableGravityLaneControl = true;
+        [Tooltip("When true, this controller stops driving the Commander's vertical position entirely -- " +
+                 "another component (e.g. GravityShiftAbility's flip logic) owns Y. Forward motion, animation " +
+                 "and freeze tint still run here.")]
+        [SerializeField] private bool relinquishVertical = false;
 
         [Header("Time Loop")]
         [Tooltip("When enabled, the run rewinds to a snapshot position instead of resetting to spawn on an interval.")]
@@ -131,7 +135,8 @@ namespace SurvivalGrind.Gameplay
                 // else: neither loop mode is enabled -- run straight through with no periodic reset.
             }
 
-            if (runner != null)
+            // When another component owns Y (e.g. Level 2's gravity-flip), skip all vertical/lane control here.
+            if (runner != null && !relinquishVertical)
             {
                 GravityLane lane = GravityLane.Ground;
                 if (enableGravityLaneControl && canMove && Keyboard.current != null)
