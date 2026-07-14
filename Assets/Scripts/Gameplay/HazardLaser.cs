@@ -17,6 +17,11 @@ namespace SurvivalGrind.Gameplay
         [Header("Damage")]
         [SerializeField] private int killBatchSize = 10;
 
+        [Header("Ability Gating")]
+        [Tooltip("Which ability (and ONLY that ability) neutralizes this hazard. Laser walls = Freeze. " +
+                 "There is no shared invulnerability - the wrong ability does nothing here.")]
+        [SerializeField] private HazardKind requiredAbility = HazardKind.Laser;
+
         [Header("Shield Block Feedback")]
         [Tooltip("Notification text shown when the Shield/Freeze ability blocks this hazard. Lets each hazard flavor (bomb/spike/aerial) say something distinct.")]
         [SerializeField] private string blockNotificationLabel = "FROZE THE THREAT";
@@ -268,7 +273,7 @@ namespace SurvivalGrind.Gameplay
             var runner = LevelRunner.Instance;
             if (runner == null) return;
 
-            if (runner.IsFrozen)
+            if (runner.IsHazardNeutralized(requiredAbility))
             {
                 if (frozenBlockRegistered) return;
                 frozenBlockRegistered = true;

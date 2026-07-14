@@ -130,7 +130,7 @@ namespace SurvivalGrind.Gameplay
         {
             isFrozenByAbility = true;
             freezeTimer = freezeDuration;
-            runner.SetFrozen(true);
+            runner.SetFreezeActive(true);
 
             if (freezeLoopAudio != null) freezeLoopAudio.Play();
             if (shieldDomeVfx != null) shieldDomeVfx.SetActive(true);
@@ -141,7 +141,7 @@ namespace SurvivalGrind.Gameplay
         {
             isFrozenByAbility = false;
             cooldownTimer = cooldown;
-            runner.SetFrozen(false);
+            runner.SetFreezeActive(false);
 
             if (freezeLoopAudio != null) freezeLoopAudio.Stop();
             if (freezeReleaseAudio != null) freezeReleaseAudio.Play();

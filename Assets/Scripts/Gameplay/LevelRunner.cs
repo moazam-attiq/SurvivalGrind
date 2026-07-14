@@ -21,6 +21,18 @@ namespace SurvivalGrind.Gameplay
         Lower
     }
 
+    /// The category a hazard belongs to. Each category is neutralized by exactly ONE ability -
+    /// there is no shared invulnerability. See <see cref="LevelRunner.IsHazardNeutralized"/>.
+    public enum HazardKind
+    {
+        /// Laser walls - neutralized ONLY by Freeze (F).
+        Laser,
+        /// Gaps, moving platforms, broken roads, moving barriers - cleared ONLY by Gravity Shift (G).
+        Gravity,
+        /// Bombs, spike corridors, bees, aerial strikes - blocked ONLY by Shield Dome (S).
+        Barrage
+    }
+
     public class LevelRunner : MonoBehaviour
     {
         public static LevelRunner Instance { get; private set; }
@@ -44,9 +56,18 @@ namespace SurvivalGrind.Gameplay
         [Header("Progression")]
         [SerializeField] private string nextLevelSceneName = "Level 2";
         [SerializeField] private int levelNumber = 1;
+        [Tooltip("Minimum Score the player must have when they reach the finish for the NEXT level to unlock. " +
+                 "Per design this is 150 for Levels 1-3. Winning with a lower score still shows Victory but does " +
+                 "not unlock the following level.")]
+        [SerializeField] private int unlockScoreThreshold = 150;
+        [Tooltip("Mark the final level (Level 4). On victory this shows finalVictoryPanel instead of the normal " +
+                 "victory panel and does not try to unlock a non-existent next level.")]
+        [SerializeField] private bool isFinalLevel = false;
 
         [Header("Panels")]
         [SerializeField] private GameObject victoryPanel;
+        [Tooltip("Optional. Shown instead of victoryPanel when isFinalLevel is true (the Final Victory / congratulations screen).")]
+        [SerializeField] private GameObject finalVictoryPanel;
         [SerializeField] private GameObject pausePanel;
 
         [Header("Audio")]
@@ -60,7 +81,12 @@ namespace SurvivalGrind.Gameplay
         public int Score { get; private set; }
         public int AliveCount { get; private set; }
         public float SurvivalTime { get; private set; }
-        public bool IsFrozen { get; private set; }
+        // Strict, independent ability states. Each hazard checks ONLY the one that neutralizes it.
+        public bool IsFreezeActive { get; private set; }
+        public bool IsGravityActive { get; private set; }
+        public bool IsShieldActive { get; private set; }
+        /// Convenience for visuals only (Commander invuln tint / animation) - never used to neutralize a hazard.
+        public bool IsFrozen => IsFreezeActive || IsGravityActive || IsShieldActive;
         public GravityLane CurrentGravityLane { get; private set; } = GravityLane.Ground;
         public bool SurvivalComplete { get; private set; }
         public float SurvivalTarget => survivalTarget;
@@ -77,8 +103,21 @@ namespace SurvivalGrind.Gameplay
 
         private void Awake()
         {
+            // Guard against a duplicate runner (e.g. a leftover from an additive load) stealing the singleton.
+            if (Instance != null && Instance != this)
+            {
+                Debug.LogWarning("LevelRunner: a second instance was found; destroying the duplicate.");
+                Destroy(gameObject);
+                return;
+            }
+
             Instance = this;
-            AliveCount = startingCrowdCount;
+            AliveCount = Mathf.Max(0, startingCrowdCount);
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this) Instance = null;
         }
 
         public void BeginGameplay()
@@ -116,9 +155,21 @@ namespace SurvivalGrind.Gameplay
             }
         }
 
-        public void SetFrozen(bool frozen)
+        public void SetFreezeActive(bool active) { IsFreezeActive = active; }
+        public void SetGravityActive(bool active) { IsGravityActive = active; }
+        public void SetShieldActive(bool active) { IsShieldActive = active; }
+
+        /// True only when the ability matching this hazard's kind is currently active.
+        /// This is the single gate every hazard must use - there is no shared invulnerability.
+        public bool IsHazardNeutralized(HazardKind kind)
         {
-            IsFrozen = frozen;
+            switch (kind)
+            {
+                case HazardKind.Laser: return IsFreezeActive;
+                case HazardKind.Gravity: return IsGravityActive;
+                case HazardKind.Barrage: return IsShieldActive;
+                default: return false;
+            }
         }
 
         public void SetGravityLane(GravityLane lane)
@@ -192,15 +243,25 @@ namespace SurvivalGrind.Gameplay
 
         public void GoToVictory()
         {
+            // Guard: only a live, playing level can transition to Victory. This prevents a duplicate
+            // Victory (or a Victory firing after a Defeat) from ever running twice.
             if (State != LevelState.Playing) return;
 
             State = LevelState.Victory;
             Time.timeScale = 1f;
             if (musicSource != null) musicSource.Stop();
             AudioManager.PlaySfx(victoryStingerSfx);
-            if (victoryPanel != null) victoryPanel.SetActive(true);
 
-            SurvivalGrind.UI.LevelSelectController.SetUnlockedLevelCount(levelNumber + 1);
+            // Show the correct end screen. The final level gets its own congratulations panel.
+            GameObject panelToShow = (isFinalLevel && finalVictoryPanel != null) ? finalVictoryPanel : victoryPanel;
+            if (panelToShow != null) panelToShow.SetActive(true);
+
+            // Unlock progression. Reaching the finish only unlocks the next level if the score cleared the
+            // threshold (150 for Levels 1-3). The final level has nothing after it to unlock.
+            if (!isFinalLevel && Score >= unlockScoreThreshold)
+            {
+                SurvivalGrind.UI.LevelSelectController.SetUnlockedLevelCount(levelNumber + 1);
+            }
         }
 
         public void GameOver()
@@ -242,6 +303,12 @@ namespace SurvivalGrind.Gameplay
         public void GoNextLevel()
         {
             Time.timeScale = 1f;
+            if (string.IsNullOrEmpty(nextLevelSceneName) || Application.CanStreamedLevelBeLoaded(nextLevelSceneName) == false)
+            {
+                Debug.LogWarning($"LevelRunner: next level scene '{nextLevelSceneName}' is missing or not in Build Settings; returning Home.");
+                SceneManager.LoadScene("MainMenu");
+                return;
+            }
             SceneManager.LoadScene(nextLevelSceneName);
         }
 

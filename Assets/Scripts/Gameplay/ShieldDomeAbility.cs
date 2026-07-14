@@ -151,7 +151,7 @@ namespace SurvivalGrind.Gameplay
         private void BeginShield(LevelRunner runner)
         {
             isShielded = true;
-            runner.SetFrozen(true);
+            runner.SetShieldActive(true);
 
             if (shieldLoopAudio != null) shieldLoopAudio.Play();
             if (shieldDomeVfx != null)
@@ -173,7 +173,7 @@ namespace SurvivalGrind.Gameplay
         {
             isShielded = false;
             cooldownTimer = cooldown;
-            runner.SetFrozen(false);
+            runner.SetShieldActive(false);
 
             if (shieldLoopAudio != null) shieldLoopAudio.Stop();
             if (shieldReleaseAudio != null) shieldReleaseAudio.Play();
