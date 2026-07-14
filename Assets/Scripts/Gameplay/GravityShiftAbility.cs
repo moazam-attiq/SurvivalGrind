@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -5,23 +6,17 @@ using UnityEngine.UI;
 
 namespace SurvivalGrind.Gameplay
 {
-    /// Level 2's gravity-flip mechanic. The Commander (and the whole crowd, which follows) rides either the
-    /// floor or the ceiling road. Tapping G flips gravity: the group smoothly crosses to the opposite surface,
-    /// invulnerable during the crossing, so hazards sitting on a surface are avoided by flipping off it.
-    /// This component OWNS the Commander's vertical position -- CommanderController must have relinquishVertical=true.
+    /// Gravity Shift (G). A timed immunity PULSE that clears ONLY gravity hazards - gaps, moving
+    /// platforms, broken roads and moving barriers. It does NOT move the Commander vertically:
+    /// up/down lane movement is owned by CommanderController's 3-lane control, so this ability and
+    /// free lane movement coexist. Freeze and Shield do nothing against gravity hazards, and Gravity
+    /// Shift does nothing against lasers/bombs/bees - strict independent logic.
     public class GravityShiftAbility : MonoBehaviour, IPointerDownHandler
     {
-        [Header("Surfaces")]
-        [Tooltip("Rest Y when gravity pulls the crowd down onto the floor road.")]
-        [SerializeField] private float floorY = -3.5f;
-        [Tooltip("Rest Y when gravity is flipped and the crowd rides the ceiling road.")]
-        [SerializeField] private float ceilingY = 3.5f;
-
-        [Header("Flip Feel")]
-        [Tooltip("Seconds to cross from one surface to the other.")]
-        [SerializeField] private float flipDuration = 0.28f;
-        [Tooltip("Small delay after landing before another flip is allowed.")]
-        [SerializeField] private float flipCooldown = 0.22f;
+        [Header("Timing")]
+        [Tooltip("Seconds the gravity-immunity window stays open after pressing G.")]
+        [SerializeField] private float shiftDuration = 1.1f;
+        [SerializeField] private float cooldown = 3f;
 
         [Header("Feedback")]
         [SerializeField] private AudioSource flipAudio;
@@ -30,30 +25,44 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private CrowdFormationController crowdFormation;
 
         [Header("Commander Glow")]
-        [Tooltip("The Commander's glow child (hidden by default). Shown + expanded while crossing.")]
+        [Tooltip("The Commander's glow child (hidden by default). Shown while the shift window is open.")]
         [SerializeField] private GameObject commanderGlow;
-        [SerializeField] private float glowScale = 2.6f;
-        [SerializeField] private Color glowColor = new Color(0.9f, 0.2f, 1f, 0.85f);
+        [SerializeField] private float glowScale = 2.4f;
+        [SerializeField] private Color glowColor = new Color(1f, 0.6f, 0.2f, 0.85f);
 
         [Header("UI (optional)")]
         [SerializeField] private Button shiftButton;
 
-        private Transform leader;
-        private bool gravityDown = true;   // true = resting on floor, false = resting on ceiling
-        private bool flipping;
-        private float flipT;
-        private float flipFrom, flipTo;
+        [Header("Denied Feedback")]
+        [SerializeField] private float deniedShakeDuration = 0.25f;
+        [SerializeField] private float deniedShakeStrength = 8f;
+        [SerializeField] private Color deniedFlashColor = new Color(1f, 0.25f, 0.25f, 1f);
+
+        private bool isActive;
+        private float activeTimer;
         private float cooldownTimer;
         private Vector3 glowBaseScale = Vector3.one;
         private Color glowBaseColor = Color.white;
+        private Image shiftButtonImage;
+        private RectTransform shiftButtonRect;
+        private Color shiftButtonNormalColor;
+        private Vector2 shiftButtonBasePos;
+        private Coroutine deniedRoutine;
 
-        /// 0 = ready to flip, 1 = mid-flip or cooling down. Drives the HUD ability fill.
-        public float CooldownFraction => flipping ? 1f : Mathf.Clamp01(cooldownTimer / Mathf.Max(0.0001f, flipCooldown));
-        public bool IsReady => !flipping && cooldownTimer <= 0f;
+        /// 0 = ready, 1 = active or fully cooling down. Drives the HUD ability fill.
+        public float CooldownFraction => isActive ? 1f : Mathf.Clamp01(cooldownTimer / Mathf.Max(0.0001f, cooldown));
+        public bool IsReady => !isActive && cooldownTimer <= 0f;
 
         private void Awake()
         {
-            if (shiftButton != null) shiftButton.onClick.AddListener(TryFlip);
+            if (shiftButton != null)
+            {
+                shiftButton.onClick.AddListener(TryFlip);
+                shiftButtonImage = shiftButton.targetGraphic as Image;
+                if (shiftButtonImage != null) shiftButtonNormalColor = shiftButtonImage.color;
+                shiftButtonRect = shiftButton.GetComponent<RectTransform>();
+                if (shiftButtonRect != null) shiftButtonBasePos = shiftButtonRect.anchoredPosition;
+            }
             if (commanderGlow != null)
             {
                 glowBaseScale = commanderGlow.transform.localScale;
@@ -62,45 +71,29 @@ namespace SurvivalGrind.Gameplay
             }
         }
 
-        private void EnsureLeader()
-        {
-            if (leader != null) return;
-            var go = GameObject.FindGameObjectWithTag("Leader");
-            if (go != null) leader = go.transform;
-        }
-
         private void Update()
         {
             var runner = LevelRunner.Instance;
             if (runner == null) return;
-            EnsureLeader();
-            if (leader == null) return;
 
-            if (!flipping && cooldownTimer > 0f) cooldownTimer -= Time.deltaTime;
-            if (shiftButton != null) shiftButton.interactable = !runner.SurvivalComplete;
-
-            bool playing = runner.State == LevelState.Playing && !runner.SurvivalComplete;
-
-            if (flipping)
+            if (isActive)
             {
-                flipT += Time.deltaTime / Mathf.Max(0.0001f, flipDuration);
-                float e = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(flipT));
-                SetLeaderY(Mathf.Lerp(flipFrom, flipTo, e));
-                if (commanderGlow != null)
-                {
-                    float pop = Mathf.Sin(Mathf.Clamp01(flipT) * Mathf.PI); // swell then settle
-                    commanderGlow.transform.localScale = Vector3.Lerp(glowBaseScale, glowBaseScale * glowScale, pop);
-                }
-                if (flipT >= 1f) Land(runner);
-                return;
+                activeTimer -= Time.deltaTime;
+                if (activeTimer <= 0f) EndShift(runner);
+            }
+            else if (cooldownTimer > 0f)
+            {
+                cooldownTimer -= Time.deltaTime;
             }
 
-            // Resting on a surface.
-            SetLeaderY(gravityDown ? floorY : ceilingY);
+            if (shiftButton != null) shiftButton.interactable = !runner.SurvivalComplete;
 
-            if (playing && IsReady && Keyboard.current != null && Keyboard.current.gKey.wasPressedThisFrame)
+            if (runner.State != LevelState.Playing || runner.SurvivalComplete) return;
+
+            if (Keyboard.current != null && Keyboard.current.gKey.wasPressedThisFrame)
             {
-                StartFlip(runner);
+                if (IsReady) BeginShift(runner);
+                else ShowDenied();
             }
         }
 
@@ -110,20 +103,16 @@ namespace SurvivalGrind.Gameplay
         {
             var runner = LevelRunner.Instance;
             if (runner == null || runner.State != LevelState.Playing || runner.SurvivalComplete) return;
-            if (!IsReady) return;
-            StartFlip(runner);
+            if (IsReady) BeginShift(runner);
+            else ShowDenied();
         }
 
-        private void StartFlip(LevelRunner runner)
+        private void BeginShift(LevelRunner runner)
         {
-            gravityDown = !gravityDown;
-            flipping = true;
-            flipT = 0f;
-            flipFrom = leader.position.y;
-            flipTo = gravityDown ? floorY : ceilingY;
+            isActive = true;
+            activeTimer = shiftDuration;
+            runner.SetGravityActive(true);
 
-            // Invulnerable while crossing so hazards on the surface are cleared naturally.
-            runner.SetFrozen(true);
             if (flipAudio != null) flipAudio.Play();
             if (gravityShiftVfx != null)
             {
@@ -135,18 +124,17 @@ namespace SurvivalGrind.Gameplay
             {
                 var sr = commanderGlow.GetComponent<SpriteRenderer>();
                 if (sr != null) sr.color = glowColor;
+                commanderGlow.transform.localScale = glowBaseScale * glowScale;
                 commanderGlow.SetActive(true);
             }
         }
 
-        private void Land(LevelRunner runner)
+        private void EndShift(LevelRunner runner)
         {
-            flipping = false;
-            flipT = 0f;
-            cooldownTimer = flipCooldown;
-            SetLeaderY(gravityDown ? floorY : ceilingY);
+            isActive = false;
+            cooldownTimer = cooldown;
+            runner.SetGravityActive(false);
 
-            runner.SetFrozen(false);
             if (gravityShiftVfx != null) gravityShiftVfx.SetActive(false);
             if (gravityShiftActiveLabel != null) gravityShiftActiveLabel.SetActive(false);
             if (commanderGlow != null)
@@ -158,11 +146,30 @@ namespace SurvivalGrind.Gameplay
             }
         }
 
-        private void SetLeaderY(float y)
+        private void ShowDenied()
         {
-            var p = leader.position;
-            p.y = y;
-            leader.position = p;
+            if (shiftButton == null) return;
+            if (deniedRoutine != null) StopCoroutine(deniedRoutine);
+            deniedRoutine = StartCoroutine(DeniedFeedback());
+        }
+
+        private IEnumerator DeniedFeedback()
+        {
+            float elapsed = 0f;
+            while (elapsed < deniedShakeDuration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float t = elapsed / deniedShakeDuration;
+                if (shiftButtonImage != null) shiftButtonImage.color = Color.Lerp(deniedFlashColor, shiftButtonNormalColor, t);
+                if (shiftButtonRect != null)
+                {
+                    float shake = Mathf.Sin(t * Mathf.PI * 8f) * deniedShakeStrength * (1f - t);
+                    shiftButtonRect.anchoredPosition = shiftButtonBasePos + new Vector2(shake, 0f);
+                }
+                yield return null;
+            }
+            if (shiftButtonImage != null) shiftButtonImage.color = shiftButtonNormalColor;
+            if (shiftButtonRect != null) shiftButtonRect.anchoredPosition = shiftButtonBasePos;
         }
     }
 }

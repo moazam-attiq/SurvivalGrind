@@ -16,6 +16,11 @@ namespace SurvivalGrind.Gameplay
                  "so brushing it costs a bite of crowd rather than instantly wiping it.")]
         [SerializeField] private float retriggerCooldown = 0.5f;
 
+        [Header("Ability Gating")]
+        [Tooltip("Which ability (and ONLY that ability) lets the team through unharmed. Barriers/gaps/broken " +
+                 "roads = Gravity Shift. Freeze and Shield do NOT help here.")]
+        [SerializeField] private HazardKind requiredAbility = HazardKind.Gravity;
+
         private float lastHit = -999f;
 
         private void Reset()
@@ -30,8 +35,8 @@ namespace SurvivalGrind.Gameplay
             var runner = LevelRunner.Instance;
             if (runner == null) return;
             if (runner.State != LevelState.Playing) return;
-            // Shield/Freeze passes straight through, same as the beams.
-            if (runner.IsFrozen) return;
+            // ONLY a Gravity Shift lets the team through a barrier - Freeze/Shield do nothing here.
+            if (runner.IsHazardNeutralized(requiredAbility)) return;
             if (Time.time - lastHit < retriggerCooldown) return;
 
             lastHit = Time.time;
