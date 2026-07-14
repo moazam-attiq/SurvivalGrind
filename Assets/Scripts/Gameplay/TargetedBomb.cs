@@ -14,7 +14,7 @@ namespace SurvivalGrind.Gameplay
 
         [Header("Telegraph")]
         [Tooltip("Seconds the ground warning reticle pulses at the predicted impact point before the bomb starts falling.")]
-        [SerializeField] private float telegraphDuration = 0.8f;
+        [SerializeField] private float telegraphDuration = 1.3f;
         [SerializeField] private float reticleRadius = 0.9f;
         [SerializeField] private Color reticleColor = new Color(1f, 0.35f, 0.1f, 0.85f);
 
