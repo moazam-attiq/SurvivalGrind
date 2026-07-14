@@ -2089,12 +2089,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 1837863748}
     m_Modifications:
     - target: {fileID: 1316190466676200546, guid: c1cc37a9840ff764baeea0c324a9ea6a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.5259001
+      objectReference: {fileID: 0}
+    - target: {fileID: 1316190466676200546, guid: c1cc37a9840ff764baeea0c324a9ea6a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 1316190466676200546, guid: c1cc37a9840ff764baeea0c324a9ea6a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 4.18
       objectReference: {fileID: 0}
     - target: {fileID: 1316190466676200546, guid: c1cc37a9840ff764baeea0c324a9ea6a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3619,7 +3623,7 @@ Transform:
   m_GameObject: {fileID: 116590935}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 209.29195, y: 0, z: 0}
+  m_LocalPosition: {x: 209.29195, y: -3.13, z: 0}
   m_LocalScale: {x: 1.6, y: 7.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16045,6 +16049,14 @@ PrefabInstance:
       propertyPath: warningSfx
       value: 
       objectReference: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.9743
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.25
+      objectReference: {fileID: 0}
     - target: {fileID: 6727035570747249932, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
       propertyPath: m_Name
       value: AerialStrike_15
@@ -16438,6 +16450,18 @@ PrefabInstance:
       propertyPath: warningSfx
       value: 
       objectReference: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4.2091
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -2.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.7695
+      objectReference: {fileID: 0}
     - target: {fileID: 6727035570747249932, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
       propertyPath: m_Name
       value: AerialStrike_25
@@ -26151,12 +26175,20 @@ PrefabInstance:
       value: AerialStrike_19
       objectReference: {fileID: 0}
     - target: {fileID: 7059137165075024773, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.16
+      objectReference: {fileID: 0}
+    - target: {fileID: 7059137165075024773, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.64
+      objectReference: {fileID: 0}
+    - target: {fileID: 7059137165075024773, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 349.37418
+      value: 353.64
       objectReference: {fileID: 0}
     - target: {fileID: 7059137165075024773, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -3.65
       objectReference: {fileID: 0}
     - target: {fileID: 7059137165075024773, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
       propertyPath: m_LocalPosition.z
@@ -26741,7 +26773,7 @@ Transform:
   m_GameObject: {fileID: 809147522}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 488.51825, y: 0, z: 0}
+  m_LocalPosition: {x: 488.51825, y: -4.21, z: 0}
   m_LocalScale: {x: 1.6, y: 7.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -33635,12 +33667,20 @@ PrefabInstance:
       value: AerialStrike_35
       objectReference: {fileID: 0}
     - target: {fileID: 7059137165075024773, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.73260003
+      objectReference: {fileID: 0}
+    - target: {fileID: 7059137165075024773, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.33998
+      objectReference: {fileID: 0}
+    - target: {fileID: 7059137165075024773, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 540.2826
       objectReference: {fileID: 0}
     - target: {fileID: 7059137165075024773, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -3.68
       objectReference: {fileID: 0}
     - target: {fileID: 7059137165075024773, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
       propertyPath: m_LocalPosition.z
@@ -34649,6 +34689,22 @@ PrefabInstance:
       propertyPath: warningSfx
       value: 
       objectReference: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.55296
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.3786001
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.1206
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.2183
+      objectReference: {fileID: 0}
     - target: {fileID: 6727035570747249932, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
       propertyPath: m_Name
       value: AerialStrike_5
@@ -37030,12 +37086,16 @@ PrefabInstance:
       value: LaserWall_31
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4.2000003
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.x
       value: 497.9218
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.z
@@ -37169,7 +37229,7 @@ Transform:
   m_GameObject: {fileID: 1184130605}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 362.88898, y: 0, z: 0}
+  m_LocalPosition: {x: 362.88898, y: 4.57, z: 0}
   m_LocalScale: {x: 1.6, y: 7.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -43437,8 +43497,8 @@ Transform:
   m_GameObject: {fileID: 1386519079}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 96.468636, y: 0, z: 0}
-  m_LocalScale: {x: 1.6, y: 7.2, z: 1}
+  m_LocalPosition: {x: 89.38, y: -2.62, z: 0}
+  m_LocalScale: {x: 1.6, y: 5.2163997, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1837863748}
@@ -47743,6 +47803,22 @@ PrefabInstance:
       propertyPath: warningSfx
       value: 
       objectReference: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.94064
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.2281
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.13
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.07
+      objectReference: {fileID: 0}
     - target: {fileID: 6727035570747249932, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
       propertyPath: m_Name
       value: AerialStrike_9
@@ -50132,6 +50208,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1837863748}
     m_Modifications:
+    - target: {fileID: 2962630949500880066, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.442
+      objectReference: {fileID: 0}
+    - target: {fileID: 2962630949500880066, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.48737
+      objectReference: {fileID: 0}
+    - target: {fileID: 2962630949500880066, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 8.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2962630949500880066, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.588
+      objectReference: {fileID: 0}
     - target: {fileID: 3167994548215009558, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_Name
       value: LaserWall_17
@@ -50803,12 +50895,20 @@ PrefabInstance:
       value: LaserWall_7
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.22335
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.2865
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 160.23889
+      value: 159.8772
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 4.07
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.z
@@ -50880,8 +50980,8 @@ Transform:
   m_GameObject: {fileID: 1607310922}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 418.6514, y: 0, z: 0}
-  m_LocalScale: {x: 1.6, y: 7.2, z: 1}
+  m_LocalPosition: {x: 419.1784, y: -3.54, z: 0}
+  m_LocalScale: {x: 1.5998328, y: 4.52376, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1837863748}
@@ -60340,7 +60440,7 @@ Transform:
   m_GameObject: {fileID: 1782429312}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 530.2588, y: 0, z: 0}
+  m_LocalPosition: {x: 530.2588, y: -2.97, z: 0}
   m_LocalScale: {x: 1.6, y: 7.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -65066,12 +65166,20 @@ PrefabInstance:
       value: LaserWall_11
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.36805
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 4.6368
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 225.11372
+      value: 230.9
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 4.46
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.z
@@ -70789,12 +70897,16 @@ PrefabInstance:
       value: LaserWall_1
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.5692997
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.x
       value: 34
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -4.25
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.z
@@ -71689,6 +71801,22 @@ PrefabInstance:
       propertyPath: warningSfx
       value: 
       objectReference: {fileID: 8300000, guid: 92dce8349300f544b88e17a93f7d48d0, type: 3}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.5833601
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.8184998
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 6195418383829279820, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.8671
+      objectReference: {fileID: 0}
     - target: {fileID: 6727035570747249932, guid: a938c87a84c9d9546abc09b32eedf9d8, type: 3}
       propertyPath: m_Name
       value: AerialStrike_29
@@ -72717,12 +72845,20 @@ PrefabInstance:
       value: LaserWall_21
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.6756566
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 5.3312
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 377.24323
+      value: 380.2278
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -2.7656
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.z
@@ -72865,17 +73001,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1837863748}
     m_Modifications:
+    - target: {fileID: 2962630949500880066, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.83
+      objectReference: {fileID: 0}
+    - target: {fileID: 2962630949500880066, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.56772
+      objectReference: {fileID: 0}
+    - target: {fileID: 2962630949500880066, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.085
+      objectReference: {fileID: 0}
+    - target: {fileID: 2962630949500880066, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.211
+      objectReference: {fileID: 0}
     - target: {fileID: 3167994548215009558, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_Name
       value: LaserWall_27
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.5000224
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 5.1114
+      objectReference: {fileID: 0}
+    - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 459.67038
+      value: 459.6703
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 4.0442
       objectReference: {fileID: 0}
     - target: {fileID: 5286314210712489483, guid: e18936ac62ddc1249956736dd018dd84, type: 3}
       propertyPath: m_LocalPosition.z
