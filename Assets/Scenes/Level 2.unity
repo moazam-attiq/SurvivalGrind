@@ -420,6 +420,7 @@ MonoBehaviour:
   warningDuration: 1
   fireDuration: 0.9
   killBatchSize: 8
+  requiredAbility: 1
   blockNotificationLabel: GRAVITY FLIP
   idleAlpha: 0.35
   idlePulseSpeed: 1.2
@@ -15555,6 +15556,7 @@ MonoBehaviour:
   warningDuration: 1
   fireDuration: 0.9
   killBatchSize: 8
+  requiredAbility: 1
   blockNotificationLabel: GRAVITY FLIP
   idleAlpha: 0.35
   idlePulseSpeed: 1.2
@@ -36408,6 +36410,7 @@ MonoBehaviour:
   warningDuration: 1
   fireDuration: 0.9
   killBatchSize: 8
+  requiredAbility: 1
   blockNotificationLabel: GRAVITY FLIP
   idleAlpha: 0.35
   idlePulseSpeed: 1.2

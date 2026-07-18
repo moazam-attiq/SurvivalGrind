@@ -19,10 +19,15 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private float retractDuration = 0.3f;
 
         [Header("Damage")]
+        [Tooltip("Max crowd members this hazard can kill per hit. Actual count is however many were really standing in the spikes.")]
         [SerializeField] private int killBatchSize = 8;
         [SerializeField] private int shieldBlockBonus = 25;
         [Tooltip("Minimum seconds between successive hits while standing in a lethal spike window.")]
         [SerializeField] private float retriggerCooldown = 0.5f;
+        [Tooltip("Rise duration (the reaction window before spikes go lethal) is multiplied down toward this fraction as the survival timer approaches its target.")]
+        [SerializeField] private float minWarningFactor = 0.5f;
+        [Tooltip("Width (world units) of the real kill zone around the Commander at the moment of impact -- kept narrow (roughly one crowd row) since the spike corridor's own trigger box is sized for its visual length, not blast radius.")]
+        [SerializeField] private float impactWidth = 1f;
 
         [Header("Visual")]
         [SerializeField] private SpriteRenderer spikeRenderer;
@@ -38,9 +43,11 @@ namespace SurvivalGrind.Gameplay
 
         private State state = State.Retracted;
         private float timer;
+        private float currentRiseDuration;
         private BoxCollider2D hitCollider;
         private float lastHit = -999f;
         private bool frozenBlockRegisteredThisWindow;
+        private int pendingKilled;
 
         private void Awake()
         {
@@ -50,7 +57,9 @@ namespace SurvivalGrind.Gameplay
             if (spikeRenderer == null) spikeRenderer = GetComponent<SpriteRenderer>();
             SetScaleY(retractedScaleY);
             if (warningGlow != null) warningGlow.intensity = 0f;
+            currentRiseDuration = riseDuration;
             timer = Random.Range(0f, retractedDuration);
+            HazardIndicator.Spawn(transform, HazardKind.Barrage, 1.8f);
         }
 
         private void Update()
@@ -63,11 +72,19 @@ namespace SurvivalGrind.Gameplay
             switch (state)
             {
                 case State.Retracted:
-                    if (timer <= 0f) { state = State.Rising; timer = riseDuration; AudioManager.PlaySfx(risingSfx); }
+                    if (timer <= 0f)
+                    {
+                        state = State.Rising;
+                        float ramp = LevelRunner.Instance != null ? LevelRunner.Instance.DifficultyRamp01 : 0f;
+                        currentRiseDuration = Mathf.Lerp(riseDuration, riseDuration * minWarningFactor, ramp);
+                        timer = currentRiseDuration;
+                        AudioManager.PlaySfx(risingSfx);
+                        runner.NotifyHazardWarning(HazardKind.Barrage);
+                    }
                     break;
                 case State.Rising:
                     {
-                        float t = 1f - Mathf.Clamp01(timer / riseDuration);
+                        float t = 1f - Mathf.Clamp01(timer / currentRiseDuration);
                         SetScaleY(Mathf.Lerp(retractedScaleY, extendedScaleY, t));
                         if (warningGlow != null) warningGlow.intensity = Mathf.Lerp(0f, 2.5f, t);
                         if (timer <= 0f)
@@ -75,11 +92,20 @@ namespace SurvivalGrind.Gameplay
                             state = State.Lethal; timer = lethalDuration;
                             hitCollider.enabled = true;
                             frozenBlockRegisteredThisWindow = false;
+                            pendingKilled = 0;
                             AudioManager.PlaySfx(impactSfx);
                         }
                         break;
                     }
                 case State.Lethal:
+                    // The spikes sit at a fixed spot; keep sampling every frame they're live,
+                    // independent of the score retrigger cooldown below, so a member scrolling
+                    // through between ticks still counts.
+                    if (!runner.IsHazardNeutralized(HazardKind.Barrage) && pendingKilled < killBatchSize)
+                    {
+                        var formation = CrowdFormationController.Instance;
+                        if (formation != null) pendingKilled += formation.KillNear(hitCollider.bounds.center, impactWidth, killBatchSize - pendingKilled);
+                    }
                     if (timer <= 0f) { state = State.Retracting; timer = retractDuration; hitCollider.enabled = false; }
                     break;
                 case State.Retracting:
@@ -119,7 +145,10 @@ namespace SurvivalGrind.Gameplay
 
             if (Time.time - lastHit < retriggerCooldown) return;
             lastHit = Time.time;
-            runner.RegisterHazardHit(killBatchSize);
+
+            int killed = pendingKilled;
+            pendingKilled = 0;
+            runner.RegisterHazardHit(killed);
         }
 
         private void OnTriggerEnter2D(Collider2D other) => TryHit(other);

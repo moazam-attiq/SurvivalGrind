@@ -36,8 +36,12 @@ namespace SurvivalGrind.Gameplay
         private Vector2 freezeButtonBasePos;
         private Coroutine deniedRoutine;
 
-        /// 0 = ready to use, 1 = actively frozen or fully on cooldown.
-        public float CooldownFraction => isFrozenByAbility ? 1f : Mathf.Clamp01(cooldownTimer / cooldown);
+        /// 0 = ready to use, 1 = actively frozen or fully on cooldown. While frozen this counts UP as
+        /// freezeTimer burns down (so the HUD fill drains to show time remaining, hitting 1 exactly
+        /// when the freeze ends), then counts back down over the cooldown as usual.
+        public float CooldownFraction => isFrozenByAbility
+            ? Mathf.Clamp01(1f - freezeTimer / freezeDuration)
+            : Mathf.Clamp01(cooldownTimer / cooldown);
         public bool IsReady => cooldownTimer <= 0f && !isFrozenByAbility;
 
         private void Awake()

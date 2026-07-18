@@ -90,6 +90,9 @@ namespace SurvivalGrind.Gameplay
         public GravityLane CurrentGravityLane { get; private set; } = GravityLane.Ground;
         public bool SurvivalComplete { get; private set; }
         public float SurvivalTarget => survivalTarget;
+        /// 0 at the start of the run, 1 once the survival target is reached. Hazards use this to
+        /// shrink their telegraph/reaction window over time so late-run play demands quicker reflexes.
+        public float DifficultyRamp01 => survivalTarget > 0f ? Mathf.Clamp01(SurvivalTime / survivalTarget) : 0f;
         public int StartingCrowdCount => startingCrowdCount;
         public float ScrollSpeed => scrollSpeed;
 
@@ -98,6 +101,11 @@ namespace SurvivalGrind.Gameplay
         public event Action<float, float> OnTimeChanged;
         public event Action<string> OnNotification;
         public event Action OnPortalReady;
+        /// Fired by a hazard the instant it enters its warning/telegraph phase, so the HUD can flash
+        /// the one ability that actually neutralizes it -- telling the player "use it now".
+        public event Action<HazardKind> OnHazardWarning;
+
+        public void NotifyHazardWarning(HazardKind kind) => OnHazardWarning?.Invoke(kind);
 
         private int consecutiveSafePasses;
 
@@ -237,7 +245,10 @@ namespace SurvivalGrind.Gameplay
             AliveCount = Mathf.Max(0, AliveCount - killCount);
             AddScore(-hazardPenalty);
             OnAliveChanged?.Invoke(AliveCount);
-            OnNotification?.Invoke(AliveCount > 0 ? $"-{killCount} CROWD LOST!" : "CROWD WIPED OUT!");
+            string label = killCount > 0
+                ? (AliveCount > 0 ? $"-{killCount} CROWD LOST!" : "CROWD WIPED OUT!")
+                : "HAZARD HIT!";
+            OnNotification?.Invoke(label);
             AudioManager.PlaySfx(crowdLossSfx);
         }
 

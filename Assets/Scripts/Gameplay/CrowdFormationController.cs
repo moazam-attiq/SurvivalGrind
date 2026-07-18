@@ -32,8 +32,13 @@ namespace SurvivalGrind.Gameplay
         [Tooltip("Full-body tint applied to every member while shielded by Freeze.")]
         [SerializeField] private Color freezeTintColor = new Color(0.35f, 0.65f, 1f, 1f);
 
+        public static CrowdFormationController Instance { get; private set; }
+
         public float BackRowDistance { get; private set; }
         public Vector3 FormationCenter { get; private set; }
+        /// Full lateral (side-to-side) span of the formation, so a hazard can size its kill zone to
+        /// cover every column without needing to know the formation's own layout constants.
+        public float FormationWidth => columns * columnSpacing;
 
         private class CrowdMember
         {
@@ -49,9 +54,13 @@ namespace SurvivalGrind.Gameplay
         }
 
         private readonly List<CrowdMember> active = new List<CrowdMember>();
-        private int previousAlive;
         private bool wasFrozen;
         private float flinchElapsed = -1f;
+
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         private void Start()
         {
@@ -64,16 +73,10 @@ namespace SurvivalGrind.Gameplay
             var runner = LevelRunner.Instance;
             int startCount = runner != null ? runner.StartingCrowdCount : maxFollowers;
             int count = Mathf.Clamp(startCount, 0, maxFollowers);
-            previousAlive = count;
 
             for (int i = 0; i < count; i++)
             {
                 SpawnMember(i);
-            }
-
-            if (runner != null)
-            {
-                runner.OnAliveChanged += HandleAliveChanged;
             }
 
             CommanderController.OnLoopReset += HandleLoopReset;
@@ -81,13 +84,8 @@ namespace SurvivalGrind.Gameplay
 
         private void OnDestroy()
         {
-            var runner = LevelRunner.Instance;
-            if (runner != null)
-            {
-                runner.OnAliveChanged -= HandleAliveChanged;
-            }
-
             CommanderController.OnLoopReset -= HandleLoopReset;
+            if (Instance == this) Instance = null;
         }
 
         private void HandleLoopReset()
@@ -183,21 +181,36 @@ namespace SurvivalGrind.Gameplay
             FormationCenter = active.Count > 0 ? sum / active.Count : commander.position;
         }
 
-        private void HandleAliveChanged(int newAliveCount)
+        /// Kills up to maxKills alive members actually standing inside worldBounds and returns how
+        /// many were killed, so a hazard reports real casualties instead of a flat guess.
+        public int KillOverlapping(Bounds worldBounds, int maxKills)
         {
-            int lost = Mathf.Max(0, previousAlive - newAliveCount);
-            previousAlive = newAliveCount;
-
-            for (int i = 0; i < lost; i++)
+            int killed = 0;
+            for (int i = active.Count - 1; i >= 0 && killed < maxKills; i--)
             {
-                CrowdMember victim = null;
-                for (int j = active.Count - 1; j >= 0; j--)
-                {
-                    if (!active[j].dying) { victim = active[j]; break; }
-                }
-                if (victim == null) break;
-                StartCoroutine(KillMember(victim));
+                var m = active[i];
+                if (m.dying || !Contains2D(worldBounds, m.t.position)) continue;
+                StartCoroutine(KillMember(m));
+                killed++;
             }
+            return killed;
+        }
+
+        /// Kills up to maxKills members within impactWidth of a hit point (e.g. the Commander's
+        /// position), spanning the full formation width so it catches every column at that row.
+        /// A hazard's own trigger box is sized for gameplay detection, not blast radius, so this
+        /// gives a real, narrow kill zone instead of one wide enough to always hit the whole crowd.
+        public int KillNear(Vector3 point, float impactWidth, int maxKills)
+        {
+            var zone = new Bounds(point, new Vector3(impactWidth, FormationWidth + columnSpacing * 2f, 1f));
+            return KillOverlapping(zone, maxKills);
+        }
+
+        // X/Y only -- Bounds.Contains also checks Z, which a 2D BoxCollider2D's near-zero depth
+        // would fail against sprites sitting off that exact plane.
+        private static bool Contains2D(Bounds b, Vector3 p)
+        {
+            return p.x >= b.min.x && p.x <= b.max.x && p.y >= b.min.y && p.y <= b.max.y;
         }
 
         private IEnumerator KillMember(CrowdMember member)

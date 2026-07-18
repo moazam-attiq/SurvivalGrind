@@ -49,8 +49,12 @@ namespace SurvivalGrind.Gameplay
         private Vector2 shiftButtonBasePos;
         private Coroutine deniedRoutine;
 
-        /// 0 = ready, 1 = active or fully cooling down. Drives the HUD ability fill.
-        public float CooldownFraction => isActive ? 1f : Mathf.Clamp01(cooldownTimer / Mathf.Max(0.0001f, cooldown));
+        /// 0 = ready, 1 = active or fully cooling down. Drives the HUD ability fill. While active this
+        /// counts UP as activeTimer burns down, so the fill drains to show time remaining instead of
+        /// sitting frozen at empty for the whole active window.
+        public float CooldownFraction => isActive
+            ? Mathf.Clamp01(1f - activeTimer / Mathf.Max(0.0001f, shiftDuration))
+            : Mathf.Clamp01(cooldownTimer / Mathf.Max(0.0001f, cooldown));
         public bool IsReady => !isActive && cooldownTimer <= 0f;
 
         private void Awake()
