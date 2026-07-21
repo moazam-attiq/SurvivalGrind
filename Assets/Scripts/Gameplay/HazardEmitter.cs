@@ -28,6 +28,9 @@ namespace SurvivalGrind.Gameplay
         [Header("Bee")]
         [SerializeField] private float beeSpawnAheadX = 12f;
         [SerializeField] private float beeYRange = 4f;
+        [Tooltip("Chance a wave's primary spawn is a bee rather than a bomb. Lower this to thin out the swarm without touching bomb frequency.")]
+        [Range(0f, 1f)]
+        [SerializeField] private float beeChance = 0.5f;
 
         private Transform commander;
         private float timer;
@@ -62,13 +65,16 @@ namespace SurvivalGrind.Gameplay
 
         private void EmitWave(float diff)
         {
-            bool bombFirst = Random.value < 0.5f;
-            if (bombFirst) SpawnBomb(); else SpawnBee();
+            bool beeFirst = Random.value < beeChance;
+            if (beeFirst) SpawnBee(); else SpawnBomb();
 
             // At higher difficulty, sometimes fire a second, different hazard in the same wave.
+            // The second slot still respects beeChance so thinning out bees also thins out the
+            // double-spawn case instead of quietly smuggling the swarm back in.
             if (diff > 0.4f && Random.value < diff * 0.6f)
             {
-                if (bombFirst) SpawnBee(); else SpawnBomb();
+                bool secondIsBee = Random.value < beeChance;
+                if (secondIsBee) SpawnBee(); else SpawnBomb();
             }
         }
 

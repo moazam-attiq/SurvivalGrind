@@ -90,6 +90,11 @@ namespace SurvivalGrind.Gameplay
         public GravityLane CurrentGravityLane { get; private set; } = GravityLane.Ground;
         public bool SurvivalComplete { get; private set; }
         public float SurvivalTarget => survivalTarget;
+        public int UnlockScoreThreshold => unlockScoreThreshold;
+        /// Set once GoToVictory runs: whether this win's score cleared unlockScoreThreshold and
+        /// actually unlocked the next level. Lets the victory screen explain why the next trial
+        /// might still be locked despite winning.
+        public bool NextLevelUnlocked { get; private set; }
         /// 0 at the start of the run, 1 once the survival target is reached. Hazards use this to
         /// shrink their telegraph/reaction window over time so late-run play demands quicker reflexes.
         public float DifficultyRamp01 => survivalTarget > 0f ? Mathf.Clamp01(SurvivalTime / survivalTarget) : 0f;
@@ -225,6 +230,32 @@ namespace SurvivalGrind.Gameplay
             AudioManager.PlaySfx(scoreSfx);
         }
 
+        /// Generic scoring event for bonuses whose amount varies per-occurrence (e.g. the Shield
+        /// ultimate's per-target blast bonus), unlike RegisterFreezeBlock/RegisterGravityShiftPass
+        /// which always award their own fixed configured amount.
+        public void RegisterBonus(int amount, string label)
+        {
+            if (State != LevelState.Playing) return;
+
+            AddScore(amount);
+            OnNotification?.Invoke($"{label} +{amount}");
+            AudioManager.PlaySfx(scoreSfx);
+        }
+
+        /// Restores crowd/audience, e.g. from a powerup pickup. Capped at the starting count so a
+        /// heal can't out-grow the formation's original layout.
+        public void HealAudience(int amount)
+        {
+            if (State != LevelState.Playing || amount <= 0) return;
+
+            int healed = Mathf.Min(amount, startingCrowdCount - AliveCount);
+            if (healed <= 0) return;
+
+            AliveCount += healed;
+            OnAliveChanged?.Invoke(AliveCount);
+            OnNotification?.Invoke($"+{healed} AUDIENCE");
+        }
+
         public void RegisterHazardHit(int killCount)
         {
             if (State != LevelState.Playing) return;
@@ -243,6 +274,12 @@ namespace SurvivalGrind.Gameplay
             }
 
             AliveCount = Mathf.Max(0, AliveCount - killCount);
+            // Defensive clamp: never show more audience than is actually visible on screen. A hit
+            // whose blast zone doesn't quite line up with where the (smoothed, trailing) crowd
+            // physically is can under-report the visual kill; this keeps the number honest instead
+            // of getting stuck above zero after the crowd has visibly run out.
+            var formation = CrowdFormationController.Instance;
+            if (formation != null) AliveCount = Mathf.Min(AliveCount, formation.AliveVisualCount);
             AddScore(-hazardPenalty);
             OnAliveChanged?.Invoke(AliveCount);
             string label = killCount > 0
@@ -269,7 +306,8 @@ namespace SurvivalGrind.Gameplay
 
             // Unlock progression. Reaching the finish only unlocks the next level if the score cleared the
             // threshold (150 for Levels 1-3). The final level has nothing after it to unlock.
-            if (!isFinalLevel && Score >= unlockScoreThreshold)
+            NextLevelUnlocked = !isFinalLevel && Score >= unlockScoreThreshold;
+            if (NextLevelUnlocked)
             {
                 SurvivalGrind.UI.LevelSelectController.SetUnlockedLevelCount(levelNumber + 1);
             }

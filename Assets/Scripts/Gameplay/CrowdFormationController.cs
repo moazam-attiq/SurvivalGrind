@@ -123,6 +123,22 @@ namespace SurvivalGrind.Gameplay
             active.Add(member);
         }
 
+        /// Spawns back up to count crowd members (capped at maxFollowers), e.g. from a powerup
+        /// pickup. Returns how many were actually revived, so the caller can report the real number.
+        public int Revive(int count)
+        {
+            int revived = 0;
+            while (revived < count && active.Count < maxFollowers)
+            {
+                SpawnMember(active.Count);
+                revived++;
+            }
+            // Reuse the freeze-reaction pulse so a heal is unmistakable even when the new member
+            // blends into a formation of dozens.
+            if (revived > 0) flinchElapsed = 0f;
+            return revived;
+        }
+
         private Vector3 GetSlotOffset(int slotIndex)
         {
             int row = slotIndex / columns;
@@ -179,6 +195,19 @@ namespace SurvivalGrind.Gameplay
 
             BackRowDistance = maxRowDepth;
             FormationCenter = active.Count > 0 ? sum / active.Count : commander.position;
+        }
+
+        /// How many members are actually visible right now (excludes ones mid-death-fade). The
+        /// authoritative "how many are really left" figure -- LevelRunner.AliveCount is clamped to
+        /// this so the audience number can never outlive the crowd actually on screen.
+        public int AliveVisualCount
+        {
+            get
+            {
+                int count = 0;
+                for (int i = 0; i < active.Count; i++) if (!active[i].dying) count++;
+                return count;
+            }
         }
 
         /// Kills up to maxKills alive members actually standing inside worldBounds and returns how

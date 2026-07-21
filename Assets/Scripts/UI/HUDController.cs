@@ -19,14 +19,18 @@ namespace SurvivalGrind.UI
         [Header("Freeze Ability (optional)")]
         [SerializeField] private FreezeAbility freezeAbility;
         [SerializeField] private Image freezeCooldownFill;
+        [Tooltip("Optional. Reuses the button's own name label to show a live countdown ('1.4s') while on cooldown, reverting to its original text (e.g. 'FREEZE') the instant it's ready.")]
+        [SerializeField] private TMP_Text freezeCooldownText;
 
         [Header("Shield Dome Ability (optional)")]
         [SerializeField] private ShieldDomeAbility shieldDomeAbility;
         [SerializeField] private Image shieldDomeCooldownFill;
+        [SerializeField] private TMP_Text shieldCooldownText;
 
         [Header("Gravity Shift Ability (optional)")]
         [SerializeField] private GravityShiftAbility gravityShiftAbility;
         [SerializeField] private Image gravityShiftCooldownFill;
+        [SerializeField] private TMP_Text gravityCooldownText;
 
         [Header("Notifications")]
         [Tooltip("Optional. Shows every score/hazard event (SAFE PASS, FROZE THE THREAT, CROWD LOST, ...). Auto-created above the score text if left empty.")]
@@ -45,11 +49,20 @@ namespace SurvivalGrind.UI
         private Coroutine freezePromptRoutine;
         private Coroutine shieldPromptRoutine;
         private Coroutine gravityPromptRoutine;
+        private string freezeReadyLabel;
+        private string shieldReadyLabel;
+        private string gravityReadyLabel;
 
         private void Start()
         {
             runner = LevelRunner.Instance;
             if (runner == null) return;
+
+            // Capture each button's own name text so the countdown can revert to it once ready,
+            // instead of hard-coding "FREEZE"/"SHIELD"/"GRAVITY SHIFT" here.
+            if (freezeCooldownText != null) freezeReadyLabel = freezeCooldownText.text;
+            if (shieldCooldownText != null) shieldReadyLabel = shieldCooldownText.text;
+            if (gravityCooldownText != null) gravityReadyLabel = gravityCooldownText.text;
 
             runner.OnScoreChanged += HandleScoreChanged;
             runner.OnAliveChanged += HandleAliveChanged;
@@ -86,6 +99,18 @@ namespace SurvivalGrind.UI
             {
                 gravityShiftCooldownFill.fillAmount = 1f - gravityShiftAbility.CooldownFraction;
             }
+
+            UpdateCooldownLabel(freezeAbility != null ? freezeAbility.SecondsUntilReady : (float?)null, freezeCooldownText, freezeReadyLabel);
+            UpdateCooldownLabel(shieldDomeAbility != null ? shieldDomeAbility.SecondsUntilReady : (float?)null, shieldCooldownText, shieldReadyLabel);
+            UpdateCooldownLabel(gravityShiftAbility != null ? gravityShiftAbility.SecondsUntilReady : (float?)null, gravityCooldownText, gravityReadyLabel);
+        }
+
+        private static void UpdateCooldownLabel(float? secondsRemaining, TMP_Text label, string readyText)
+        {
+            if (label == null || secondsRemaining == null) return;
+            label.text = secondsRemaining.Value > 0.05f
+                ? secondsRemaining.Value.ToString("0.0") + "s"
+                : readyText;
         }
 
         private void HandleScoreChanged(int score)
