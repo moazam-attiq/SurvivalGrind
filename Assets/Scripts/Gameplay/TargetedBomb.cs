@@ -45,7 +45,9 @@ namespace SurvivalGrind.Gameplay
 
         private static Sprite proceduralRingSprite;
 
-        private static Sprite GetRingSprite()
+        /// Internal (not private) so other hazard VFX -- e.g. BeeHorde's super-ability burst -- can
+        /// reuse this same procedural ring instead of duplicating the texture-generation code.
+        internal static Sprite GetRingSprite()
         {
             if (proceduralRingSprite != null) return proceduralRingSprite;
             const int size = 64;

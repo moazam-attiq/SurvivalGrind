@@ -110,9 +110,46 @@ namespace SurvivalGrind.Gameplay
         /// the one ability that actually neutralizes it -- telling the player "use it now".
         public event Action<HazardKind> OnHazardWarning;
 
+        /// Fired the instant a SECOND ability becomes active while another is still active (any pair --
+        /// Freeze+Gravity, Freeze+Shield, Gravity+Shield). This is the Level 4 Bee Horde "Super Ability":
+        /// any two abilities running at once, not a fixed combo. Only fires once per overlap (not every
+        /// frame the overlap continues) - see RecomputeSuperAbility.
+        public event Action OnSuperAbilityActivated;
+
         public void NotifyHazardWarning(HazardKind kind) => OnHazardWarning?.Invoke(kind);
 
         private int consecutiveSafePasses;
+        private bool superAbilityWasActive;
+
+        /// True for a few seconds after the Super Ability fires. While true, every hazard hit and the
+        /// Commander-exposed instant-kill path are no-ops - the single choke points every hazard already
+        /// funnels through (RegisterHazardHit / GameOver), so no individual hazard script needs to know
+        /// about it.
+        public bool IsSuperInvulnerable { get; private set; }
+        private float superInvulnTimer;
+
+        public void GrantSuperInvulnerability(float seconds)
+        {
+            superInvulnTimer = Mathf.Max(superInvulnTimer, seconds);
+            IsSuperInvulnerable = true;
+        }
+
+        private void RecomputeSuperAbility()
+        {
+            int active = (IsFreezeActive ? 1 : 0) + (IsGravityActive ? 1 : 0) + (IsShieldActive ? 1 : 0);
+            if (active >= 2)
+            {
+                if (!superAbilityWasActive)
+                {
+                    superAbilityWasActive = true;
+                    OnSuperAbilityActivated?.Invoke();
+                }
+            }
+            else
+            {
+                superAbilityWasActive = false;
+            }
+        }
 
         private void Awake()
         {
@@ -145,6 +182,12 @@ namespace SurvivalGrind.Gameplay
         {
             if (State != LevelState.Playing) return;
 
+            if (IsSuperInvulnerable)
+            {
+                superInvulnTimer -= Time.deltaTime;
+                if (superInvulnTimer <= 0f) IsSuperInvulnerable = false;
+            }
+
             SurvivalTime += Time.deltaTime;
             OnTimeChanged?.Invoke(SurvivalTime, survivalTarget);
 
@@ -168,9 +211,9 @@ namespace SurvivalGrind.Gameplay
             }
         }
 
-        public void SetFreezeActive(bool active) { IsFreezeActive = active; }
-        public void SetGravityActive(bool active) { IsGravityActive = active; }
-        public void SetShieldActive(bool active) { IsShieldActive = active; }
+        public void SetFreezeActive(bool active) { IsFreezeActive = active; RecomputeSuperAbility(); }
+        public void SetGravityActive(bool active) { IsGravityActive = active; RecomputeSuperAbility(); }
+        public void SetShieldActive(bool active) { IsShieldActive = active; RecomputeSuperAbility(); }
 
         /// True only when the ability matching this hazard's kind is currently active.
         /// This is the single gate every hazard must use - there is no shared invulnerability.
@@ -259,6 +302,7 @@ namespace SurvivalGrind.Gameplay
         public void RegisterHazardHit(int killCount)
         {
             if (State != LevelState.Playing) return;
+            if (IsSuperInvulnerable) return;
 
             bool commanderExposed = AliveCount <= 0;
             consecutiveSafePasses = 0;
@@ -316,6 +360,7 @@ namespace SurvivalGrind.Gameplay
         public void GameOver()
         {
             if (State != LevelState.Playing) return;
+            if (IsSuperInvulnerable) return;
 
             State = LevelState.Defeat;
             Time.timeScale = 1f;

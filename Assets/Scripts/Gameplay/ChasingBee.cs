@@ -34,6 +34,11 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private AudioClip stingSfx;
         [SerializeField] private AudioClip blockSfx;
 
+        /// Set by BeeHorde right after spawn. A horde bee instantly kills the player on unblocked
+        /// contact instead of ticking crowd damage - Shield/Freeze still repel/kill it individually
+        /// exactly as before, only unblocked contact is different.
+        public bool IsHordeMember { get; set; }
+
         private Transform target;
         private float age;
         private float wanderSeed;
@@ -119,6 +124,14 @@ namespace SurvivalGrind.Gameplay
                 runner.RegisterFreezeBlock("FROZE THE SWARM");
                 AudioManager.PlaySfxAt(blockSfx, transform.position);
                 Destroy(gameObject);
+                return;
+            }
+
+            if (IsHordeMember)
+            {
+                // Bee Horde rule: contact instantly ends the run and does not touch score.
+                AudioManager.PlaySfxAt(stingSfx, transform.position);
+                runner.GameOver();
                 return;
             }
 

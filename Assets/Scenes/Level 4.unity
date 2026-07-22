@@ -21229,6 +21229,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.HazardEmitter
   bombPrefab: {fileID: 1669636000810372745, guid: 9b1015d1ca46d7a41b754e48d86c4594, type: 3}
   beePrefab: {fileID: 1567066927215263985, guid: 0ed8b427089b2e0458611a455dab3c15, type: 3}
+  laserPrefab: {fileID: 7125536094809260867, guid: c1cc37a9840ff764baeea0c324a9ea6a, type: 3}
+  gapPrefab: {fileID: 7400000000000001, guid: dd223e1a62da43d6a03ced90c46f7621, type: 3}
+  bombLauncherPrefab: {fileID: 6012417139993529894, guid: 026d3215571f0434682314115bcc4748, type: 3}
   startDelay: 3
   baseInterval: 4.5
   minInterval: 1.8
@@ -21237,7 +21240,6 @@ MonoBehaviour:
   bombLeadX: 1.5
   beeSpawnAheadX: 12
   beeYRange: 4
-  beeChance: 0.3
 --- !u!1 &531093253
 GameObject:
   m_ObjectHideFlags: 0
@@ -50643,7 +50645,11 @@ PrefabInstance:
       objectReference: {fileID: 1600897036}
     - target: {fileID: 7198662181756562314, guid: d0fe0757955c35e4c88f85e5e47da1bc, type: 3}
       propertyPath: usePositionLoop
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7198662181756562314, guid: d0fe0757955c35e4c88f85e5e47da1bc, type: 3}
+      propertyPath: loopTriggerX
+      value: 612
       objectReference: {fileID: 0}
     - target: {fileID: 7198662181756562314, guid: d0fe0757955c35e4c88f85e5e47da1bc, type: 3}
       propertyPath: laneShiftDistance
