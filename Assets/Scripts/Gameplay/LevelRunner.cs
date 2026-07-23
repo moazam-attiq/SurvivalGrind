@@ -90,6 +90,14 @@ namespace SurvivalGrind.Gameplay
         public GravityLane CurrentGravityLane { get; private set; } = GravityLane.Ground;
         public bool SurvivalComplete { get; private set; }
         public float SurvivalTarget => survivalTarget;
+        public int UnlockScoreThreshold => unlockScoreThreshold;
+        /// Set once GoToVictory runs: whether this win's score cleared unlockScoreThreshold and
+        /// actually unlocked the next level. Lets the victory screen explain why the next trial
+        /// might still be locked despite winning.
+        public bool NextLevelUnlocked { get; private set; }
+        /// 0 at the start of the run, 1 once the survival target is reached. Hazards use this to
+        /// shrink their telegraph/reaction window over time so late-run play demands quicker reflexes.
+        public float DifficultyRamp01 => survivalTarget > 0f ? Mathf.Clamp01(SurvivalTime / survivalTarget) : 0f;
         public int StartingCrowdCount => startingCrowdCount;
         public float ScrollSpeed => scrollSpeed;
 
@@ -98,8 +106,50 @@ namespace SurvivalGrind.Gameplay
         public event Action<float, float> OnTimeChanged;
         public event Action<string> OnNotification;
         public event Action OnPortalReady;
+        /// Fired by a hazard the instant it enters its warning/telegraph phase, so the HUD can flash
+        /// the one ability that actually neutralizes it -- telling the player "use it now".
+        public event Action<HazardKind> OnHazardWarning;
+
+        /// Fired the instant a SECOND ability becomes active while another is still active (any pair --
+        /// Freeze+Gravity, Freeze+Shield, Gravity+Shield). This is the Level 4 Bee Horde "Super Ability":
+        /// any two abilities running at once, not a fixed combo. Only fires once per overlap (not every
+        /// frame the overlap continues) - see RecomputeSuperAbility.
+        public event Action OnSuperAbilityActivated;
+
+        public void NotifyHazardWarning(HazardKind kind) => OnHazardWarning?.Invoke(kind);
 
         private int consecutiveSafePasses;
+        private bool superAbilityWasActive;
+
+        /// True for a few seconds after the Super Ability fires. While true, every hazard hit and the
+        /// Commander-exposed instant-kill path are no-ops - the single choke points every hazard already
+        /// funnels through (RegisterHazardHit / GameOver), so no individual hazard script needs to know
+        /// about it.
+        public bool IsSuperInvulnerable { get; private set; }
+        private float superInvulnTimer;
+
+        public void GrantSuperInvulnerability(float seconds)
+        {
+            superInvulnTimer = Mathf.Max(superInvulnTimer, seconds);
+            IsSuperInvulnerable = true;
+        }
+
+        private void RecomputeSuperAbility()
+        {
+            int active = (IsFreezeActive ? 1 : 0) + (IsGravityActive ? 1 : 0) + (IsShieldActive ? 1 : 0);
+            if (active >= 2)
+            {
+                if (!superAbilityWasActive)
+                {
+                    superAbilityWasActive = true;
+                    OnSuperAbilityActivated?.Invoke();
+                }
+            }
+            else
+            {
+                superAbilityWasActive = false;
+            }
+        }
 
         private void Awake()
         {
@@ -132,6 +182,12 @@ namespace SurvivalGrind.Gameplay
         {
             if (State != LevelState.Playing) return;
 
+            if (IsSuperInvulnerable)
+            {
+                superInvulnTimer -= Time.deltaTime;
+                if (superInvulnTimer <= 0f) IsSuperInvulnerable = false;
+            }
+
             SurvivalTime += Time.deltaTime;
             OnTimeChanged?.Invoke(SurvivalTime, survivalTarget);
 
@@ -155,9 +211,9 @@ namespace SurvivalGrind.Gameplay
             }
         }
 
-        public void SetFreezeActive(bool active) { IsFreezeActive = active; }
-        public void SetGravityActive(bool active) { IsGravityActive = active; }
-        public void SetShieldActive(bool active) { IsShieldActive = active; }
+        public void SetFreezeActive(bool active) { IsFreezeActive = active; RecomputeSuperAbility(); }
+        public void SetGravityActive(bool active) { IsGravityActive = active; RecomputeSuperAbility(); }
+        public void SetShieldActive(bool active) { IsShieldActive = active; RecomputeSuperAbility(); }
 
         /// True only when the ability matching this hazard's kind is currently active.
         /// This is the single gate every hazard must use - there is no shared invulnerability.
@@ -217,9 +273,36 @@ namespace SurvivalGrind.Gameplay
             AudioManager.PlaySfx(scoreSfx);
         }
 
+        /// Generic scoring event for bonuses whose amount varies per-occurrence (e.g. the Shield
+        /// ultimate's per-target blast bonus), unlike RegisterFreezeBlock/RegisterGravityShiftPass
+        /// which always award their own fixed configured amount.
+        public void RegisterBonus(int amount, string label)
+        {
+            if (State != LevelState.Playing) return;
+
+            AddScore(amount);
+            OnNotification?.Invoke($"{label} +{amount}");
+            AudioManager.PlaySfx(scoreSfx);
+        }
+
+        /// Restores crowd/audience, e.g. from a powerup pickup. Capped at the starting count so a
+        /// heal can't out-grow the formation's original layout.
+        public void HealAudience(int amount)
+        {
+            if (State != LevelState.Playing || amount <= 0) return;
+
+            int healed = Mathf.Min(amount, startingCrowdCount - AliveCount);
+            if (healed <= 0) return;
+
+            AliveCount += healed;
+            OnAliveChanged?.Invoke(AliveCount);
+            OnNotification?.Invoke($"+{healed} AUDIENCE");
+        }
+
         public void RegisterHazardHit(int killCount)
         {
             if (State != LevelState.Playing) return;
+            if (IsSuperInvulnerable) return;
 
             bool commanderExposed = AliveCount <= 0;
             consecutiveSafePasses = 0;
@@ -235,9 +318,18 @@ namespace SurvivalGrind.Gameplay
             }
 
             AliveCount = Mathf.Max(0, AliveCount - killCount);
+            // Defensive clamp: never show more audience than is actually visible on screen. A hit
+            // whose blast zone doesn't quite line up with where the (smoothed, trailing) crowd
+            // physically is can under-report the visual kill; this keeps the number honest instead
+            // of getting stuck above zero after the crowd has visibly run out.
+            var formation = CrowdFormationController.Instance;
+            if (formation != null) AliveCount = Mathf.Min(AliveCount, formation.AliveVisualCount);
             AddScore(-hazardPenalty);
             OnAliveChanged?.Invoke(AliveCount);
-            OnNotification?.Invoke(AliveCount > 0 ? $"-{killCount} CROWD LOST!" : "CROWD WIPED OUT!");
+            string label = killCount > 0
+                ? (AliveCount > 0 ? $"-{killCount} CROWD LOST!" : "CROWD WIPED OUT!")
+                : "HAZARD HIT!";
+            OnNotification?.Invoke(label);
             AudioManager.PlaySfx(crowdLossSfx);
         }
 
@@ -258,7 +350,8 @@ namespace SurvivalGrind.Gameplay
 
             // Unlock progression. Reaching the finish only unlocks the next level if the score cleared the
             // threshold (150 for Levels 1-3). The final level has nothing after it to unlock.
-            if (!isFinalLevel && Score >= unlockScoreThreshold)
+            NextLevelUnlocked = !isFinalLevel && Score >= unlockScoreThreshold;
+            if (NextLevelUnlocked)
             {
                 SurvivalGrind.UI.LevelSelectController.SetUnlockedLevelCount(levelNumber + 1);
             }
@@ -267,6 +360,7 @@ namespace SurvivalGrind.Gameplay
         public void GameOver()
         {
             if (State != LevelState.Playing) return;
+            if (IsSuperInvulnerable) return;
 
             State = LevelState.Defeat;
             Time.timeScale = 1f;

@@ -360,6 +360,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.HazardGap
   killBatchSize: 10
+  crowdCatchUpWindow: 1.2
+  impactWidth: 1
   dangerLane: 0
   pulseSpeed: 1.2
   minAlpha: 0.55
@@ -420,6 +422,9 @@ MonoBehaviour:
   warningDuration: 1
   fireDuration: 0.9
   killBatchSize: 8
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 1
   blockNotificationLabel: GRAVITY FLIP
   idleAlpha: 0.35
   idlePulseSpeed: 1.2
@@ -431,6 +436,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 1, g: 0.15, b: 0.12, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 4581472}
   warningIndicator: {fileID: 0}
@@ -689,7 +695,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.LaneBarrier
   killBatchSize: 6
+  impactWidth: 1
   retriggerCooldown: 0.5
+  requiredAbility: 1
 --- !u!61 &5977998
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1107,6 +1115,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.HazardGap
   killBatchSize: 10
+  crowdCatchUpWindow: 1.2
+  impactWidth: 1
   dangerLane: 0
   pulseSpeed: 1.2
   minAlpha: 0.55
@@ -3883,6 +3893,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.HazardGap
   killBatchSize: 10
+  crowdCatchUpWindow: 1.2
+  impactWidth: 1
   dangerLane: 1
   pulseSpeed: 1.2
   minAlpha: 0.55
@@ -15555,6 +15567,9 @@ MonoBehaviour:
   warningDuration: 1
   fireDuration: 0.9
   killBatchSize: 8
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 1
   blockNotificationLabel: GRAVITY FLIP
   idleAlpha: 0.35
   idlePulseSpeed: 1.2
@@ -15566,6 +15581,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 1, g: 0.15, b: 0.12, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 311825177}
   warningIndicator: {fileID: 0}
@@ -18292,6 +18308,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.HazardGap
   killBatchSize: 10
+  crowdCatchUpWindow: 1.2
+  impactWidth: 1
   dangerLane: 0
   pulseSpeed: 1.2
   minAlpha: 0.55
@@ -18984,7 +19002,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.LaneBarrier
   killBatchSize: 6
+  impactWidth: 1
   retriggerCooldown: 0.5
+  requiredAbility: 1
 --- !u!61 &457072167
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -23254,6 +23274,9 @@ MonoBehaviour:
   finalScoreText: {fileID: 2041757569}
   survivorsStatText: {fileID: 56672247}
   timeStatText: {fileID: 1055675971}
+  unlockStatusText: {fileID: 1342003230}
+  unlockedColor: {r: 0.4, g: 1, b: 0.55, a: 1}
+  notUnlockedColor: {r: 1, g: 0.75, b: 0.3, a: 1}
 --- !u!1 &571098679
 GameObject:
   m_ObjectHideFlags: 0
@@ -23392,7 +23415,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.LaneBarrier
   killBatchSize: 6
+  impactWidth: 1
   retriggerCooldown: 0.5
+  requiredAbility: 1
 --- !u!61 &596386165
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -26081,6 +26106,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.HazardGap
   killBatchSize: 10
+  crowdCatchUpWindow: 1.2
+  impactWidth: 1
   dangerLane: 0
   pulseSpeed: 1.2
   minAlpha: 0.55
@@ -32421,6 +32448,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.HazardGap
   killBatchSize: 10
+  crowdCatchUpWindow: 1.2
+  impactWidth: 1
   dangerLane: 2
   pulseSpeed: 1.2
   minAlpha: 0.55
@@ -32508,7 +32537,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.LaneBarrier
   killBatchSize: 6
+  impactWidth: 1
   retriggerCooldown: 0.5
+  requiredAbility: 1
 --- !u!61 &786215697
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -35475,6 +35506,7 @@ RectTransform:
   - {fileID: 2041757568}
   - {fileID: 56672246}
   - {fileID: 1055675970}
+  - {fileID: 490210743}
   - {fileID: 2141923433}
   - {fileID: 369980258}
   m_Father: {fileID: 568154336}
@@ -36408,6 +36440,9 @@ MonoBehaviour:
   warningDuration: 1
   fireDuration: 0.9
   killBatchSize: 8
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 1
   blockNotificationLabel: GRAVITY FLIP
   idleAlpha: 0.35
   idlePulseSpeed: 1.2
@@ -36419,6 +36454,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 1, g: 0.15, b: 0.12, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 957543590}
   warningIndicator: {fileID: 0}
@@ -36749,6 +36785,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.HazardGap
   killBatchSize: 10
+  crowdCatchUpWindow: 1.2
+  impactWidth: 1
   dangerLane: 0
   pulseSpeed: 1.2
   minAlpha: 0.55
@@ -37050,7 +37088,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.LaneBarrier
   killBatchSize: 6
+  impactWidth: 1
   retriggerCooldown: 0.5
+  requiredAbility: 1
 --- !u!61 &1002641137
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -45595,6 +45635,12 @@ MonoBehaviour:
   shieldDomeCooldownFill: {fileID: 0}
   gravityShiftAbility: {fileID: 1510398885}
   gravityShiftCooldownFill: {fileID: 900000005}
+  notificationText: {fileID: 0}
+  notificationDuration: 1.3
+  notificationGainColor: {r: 0.4, g: 1, b: 0.55, a: 1}
+  notificationLossColor: {r: 1, g: 0.35, b: 0.35, a: 1}
+  promptPulseScale: 1.35
+  promptPulseDuration: 0.35
 --- !u!1 &1199183759
 GameObject:
   m_ObjectHideFlags: 0
@@ -45642,7 +45688,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.LaneBarrier
   killBatchSize: 6
+  impactWidth: 1
   retriggerCooldown: 0.5
+  requiredAbility: 1
 --- !u!61 &1199183762
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -61746,7 +61794,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.LaneBarrier
   killBatchSize: 6
+  impactWidth: 1
   retriggerCooldown: 0.5
+  requiredAbility: 1
 --- !u!61 &1509653379
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -61911,7 +61961,10 @@ MonoBehaviour:
   requireMinScoreToWin: 1
   nextLevelSceneName: Level 3
   levelNumber: 2
+  unlockScoreThreshold: 150
+  isFinalLevel: 0
   victoryPanel: {fileID: 568154335}
+  finalVictoryPanel: {fileID: 0}
   pausePanel: {fileID: 1107116153}
   musicSource: {fileID: 1326220430}
   crowdLossSfx: {fileID: 8300000, guid: ac20a3fecd028a54f933b3192756a513, type: 3}
@@ -61930,10 +61983,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca1f1b769c590746a21210bf60e42ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.GravityShiftAbility
-  floorY: -3.5
-  ceilingY: 3.5
-  flipDuration: 0.28
-  flipCooldown: 0.22
+  shiftDuration: 1.1
+  cooldown: 3
   flipAudio: {fileID: 290236444}
   gravityShiftVfx: {fileID: 1621718668}
   gravityShiftActiveLabel: {fileID: 900000001}
@@ -61942,6 +61993,9 @@ MonoBehaviour:
   glowScale: 2.6
   glowColor: {r: 0.9, g: 0.2, b: 1, a: 0.85}
   shiftButton: {fileID: 1503877246}
+  deniedShakeDuration: 0.25
+  deniedShakeStrength: 8
+  deniedFlashColor: {r: 1, g: 0.25, b: 0.25, a: 1}
 --- !u!114 &1510398886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64106,7 +64160,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.LaneBarrier
   killBatchSize: 6
+  impactWidth: 1
   retriggerCooldown: 0.5
+  requiredAbility: 1
 --- !u!61 &1559016325
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -64473,11 +64529,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7198662181756562314, guid: d0fe0757955c35e4c88f85e5e47da1bc, type: 3}
       propertyPath: relinquishVertical
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7198662181756562314, guid: d0fe0757955c35e4c88f85e5e47da1bc, type: 3}
       propertyPath: enableGravityLaneControl
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8155051338552695591, guid: d0fe0757955c35e4c88f85e5e47da1bc, type: 3}
       propertyPath: m_LocalScale.x
@@ -64782,7 +64838,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 42}
-  m_SizeDelta: {x: 520, y: 410}
+  m_SizeDelta: {x: 520, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1620919479
 MonoBehaviour:
@@ -64811,11 +64867,11 @@ MonoBehaviour:
     ARROW</color>  Speed Up
 
 
-    <color=#FF33D9>G</color>  Flip Gravity
+    <color=#FF33D9>UP / DOWN ARROW</color>  Switch
+    Lanes
 
 
-    <color=#FFE64D>PAUSE
-    BUTTON</color>  Pause the Game'
+    <color=#FF33D9>G</color>  Flip Gravity'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4d21f03c03fe45b4cac3a3ed8aa131e2, type: 2}
   m_sharedMaterial: {fileID: 8824580228218866150, guid: 4d21f03c03fe45b4cac3a3ed8aa131e2, type: 2}
@@ -69908,6 +69964,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.HazardGap
   killBatchSize: 10
+  crowdCatchUpWindow: 1.2
+  impactWidth: 1
   dangerLane: 0
   pulseSpeed: 1.2
   minAlpha: 0.55
@@ -74822,6 +74880,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.HazardGap
   killBatchSize: 10
+  crowdCatchUpWindow: 1.2
+  impactWidth: 1
   dangerLane: 0
   pulseSpeed: 1.2
   minAlpha: 0.55
@@ -86729,6 +86789,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.HazardGap
   killBatchSize: 10
+  crowdCatchUpWindow: 1.2
+  impactWidth: 1
   dangerLane: 1
   pulseSpeed: 1.2
   minAlpha: 0.55
@@ -87485,3 +87547,140 @@ SceneRoots:
   - {fileID: 1473693981}
   - {fileID: 996473144}
   - {fileID: 1600650301}
+--- !u!1 &1109512131
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 490210743}
+  - component: {fileID: 1663935662}
+  - component: {fileID: 1342003230}
+  m_Layer: 0
+  m_Name: UnlockStatusText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &490210743
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109512131}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 893487850}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -70}
+  m_SizeDelta: {x: 640, y: 60}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1663935662
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109512131}
+  m_CullTransparentMesh: 1
+--- !u!114 &1342003230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109512131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 'NEXT TRIAL UNLOCKED!'
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 4d21f03c03fe45b4cac3a3ed8aa131e2, type: 2}
+  m_sharedMaterial: {fileID: 8824580228218866150, guid: 4d21f03c03fe45b4cac3a3ed8aa131e2, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: 0
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 26
+  m_fontSizeBase: 26
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 14
+  m_fontSizeMax: 40
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_characterHorizontalScale: 1
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_TextWrappingMode: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 0
+  m_ActiveFontFeatures: 6e72656b
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_EmojiFallbackSupport: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}

@@ -18,7 +18,7 @@ namespace SurvivalGrind.UI
         }
 
         private const string UnlockedLevelsKey = "SG_UnlockedLevels";
-        private const float LockedContentAlpha = 0.45f;
+        private const float DimContentAlpha = 0.45f;
 
         [SerializeField] private LevelEntry[] levels;
 
@@ -37,15 +37,20 @@ namespace SurvivalGrind.UI
             RefreshLockStates();
         }
 
+        /// unlockedCount is "how far you've gotten": levels below it are beaten (completed), the
+        /// level AT unlockedCount is open but not yet beaten, anything past it is still locked.
         public void RefreshLockStates()
         {
             int unlockedCount = PlayerPrefs.GetInt(UnlockedLevelsKey, 1);
             foreach (var entry in levels)
             {
-                bool unlocked = entry.levelNumber <= unlockedCount;
-                if (entry.button != null) entry.button.interactable = unlocked;
-                if (entry.lockOverlay != null) entry.lockOverlay.SetActive(!unlocked);
-                if (entry.contentGroup != null) entry.contentGroup.alpha = unlocked ? 1f : LockedContentAlpha;
+                bool completed = entry.levelNumber < unlockedCount;
+                bool locked = entry.levelNumber > unlockedCount;
+                bool playable = !locked;
+
+                if (entry.button != null) entry.button.interactable = playable;
+                if (entry.lockOverlay != null) entry.lockOverlay.SetActive(locked);
+                if (entry.contentGroup != null) entry.contentGroup.alpha = completed ? 1f : DimContentAlpha;
             }
         }
 

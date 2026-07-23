@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using SurvivalGrind.UI;
 
@@ -7,7 +8,12 @@ namespace SurvivalGrind.Gameplay
     public class HazardGap : MonoBehaviour
     {
         [Header("Damage")]
+        [Tooltip("Max crowd members this hazard can kill per hit. Actual count is however many were really standing in the gap.")]
         [SerializeField] private int killBatchSize = 10;
+        [Tooltip("Seconds to keep watching this gap after the Commander crosses it, so the crowd trailing behind can actually fall in as they catch up.")]
+        [SerializeField] private float crowdCatchUpWindow = 1.2f;
+        [Tooltip("Width (world units) of the real kill zone at the gap -- kept narrow (roughly one crowd row) since the gap's own trigger box is sized for its visual length, not blast radius.")]
+        [SerializeField] private float impactWidth = 1f;
         [SerializeField] private GravityLane dangerLane = GravityLane.Ground;
 
         [Header("Visibility")]
@@ -43,6 +49,7 @@ namespace SurvivalGrind.Gameplay
                 voidGlow.enabled = true;
                 voidGlow.intensity = glowIntensity;
             }
+            HazardIndicator.Spawn(transform, HazardKind.Gravity, 1.8f);
         }
 
         private void OnEnable()
@@ -88,8 +95,25 @@ namespace SurvivalGrind.Gameplay
             else
             {
                 AudioManager.PlaySfx(fallSfx);
-                runner.RegisterHazardHit(killBatchSize);
+                StartCoroutine(CatchTrailingCrowd(runner));
             }
+        }
+
+        private IEnumerator CatchTrailingCrowd(LevelRunner runner)
+        {
+            int totalKilled = 0;
+            float elapsed = 0f;
+            while (elapsed < crowdCatchUpWindow)
+            {
+                elapsed += Time.deltaTime;
+                if (totalKilled < killBatchSize)
+                {
+                    var formation = CrowdFormationController.Instance;
+                    if (formation != null) totalKilled += formation.KillNear(hitCollider.bounds.center, impactWidth, killBatchSize - totalKilled);
+                }
+                yield return null;
+            }
+            runner.RegisterHazardHit(totalKilled);
         }
     }
 }

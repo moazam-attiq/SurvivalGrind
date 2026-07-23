@@ -16,7 +16,10 @@ namespace SurvivalGrind.Gameplay
         [Header("Timing")]
         [Tooltip("Seconds the gravity-immunity window stays open after pressing G.")]
         [SerializeField] private float shiftDuration = 1.1f;
+        [Tooltip("Cooldown at the start of the run.")]
         [SerializeField] private float cooldown = 3f;
+        [Tooltip("Cooldown once the survival target is reached -- abilities get more spammable the longer you survive.")]
+        [SerializeField] private float minCooldown = 1.5f;
 
         [Header("Feedback")]
         [SerializeField] private AudioSource flipAudio;
@@ -34,24 +37,30 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private Button shiftButton;
 
         [Header("Denied Feedback")]
+        [Tooltip("Red flash only -- the button stays fixed in place so a rapid mash never nudges it into a neighbor.")]
         [SerializeField] private float deniedShakeDuration = 0.25f;
-        [SerializeField] private float deniedShakeStrength = 8f;
         [SerializeField] private Color deniedFlashColor = new Color(1f, 0.25f, 0.25f, 1f);
 
         private bool isActive;
         private float activeTimer;
         private float cooldownTimer;
+        private float currentCooldownDuration;
         private Vector3 glowBaseScale = Vector3.one;
         private Color glowBaseColor = Color.white;
         private Image shiftButtonImage;
-        private RectTransform shiftButtonRect;
         private Color shiftButtonNormalColor;
-        private Vector2 shiftButtonBasePos;
         private Coroutine deniedRoutine;
 
-        /// 0 = ready, 1 = active or fully cooling down. Drives the HUD ability fill.
-        public float CooldownFraction => isActive ? 1f : Mathf.Clamp01(cooldownTimer / Mathf.Max(0.0001f, cooldown));
+        /// 0 = ready, 1 = active or fully cooling down. Drives the HUD ability fill. While active this
+        /// counts UP as activeTimer burns down, so the fill drains to show time remaining instead of
+        /// sitting frozen at empty for the whole active window.
+        public float CooldownFraction => isActive
+            ? Mathf.Clamp01(1f - activeTimer / Mathf.Max(0.0001f, shiftDuration))
+            : Mathf.Clamp01(cooldownTimer / Mathf.Max(0.0001f, currentCooldownDuration));
         public bool IsReady => !isActive && cooldownTimer <= 0f;
+        /// Seconds left before this ability can be used again (0 while already ready), so the HUD
+        /// can show an actual countdown instead of just a fill bar.
+        public float SecondsUntilReady => isActive ? activeTimer : Mathf.Max(0f, cooldownTimer);
 
         private void Awake()
         {
@@ -60,8 +69,6 @@ namespace SurvivalGrind.Gameplay
                 shiftButton.onClick.AddListener(TryFlip);
                 shiftButtonImage = shiftButton.targetGraphic as Image;
                 if (shiftButtonImage != null) shiftButtonNormalColor = shiftButtonImage.color;
-                shiftButtonRect = shiftButton.GetComponent<RectTransform>();
-                if (shiftButtonRect != null) shiftButtonBasePos = shiftButtonRect.anchoredPosition;
             }
             if (commanderGlow != null)
             {
@@ -96,6 +103,9 @@ namespace SurvivalGrind.Gameplay
                 else ShowDenied();
             }
         }
+
+        /// Instantly clears the cooldown so the ability is ready again. Used by powerup pickups.
+        public void RefillCooldown() => cooldownTimer = 0f;
 
         public void OnPointerDown(PointerEventData eventData) => TryFlip();
 
@@ -132,7 +142,8 @@ namespace SurvivalGrind.Gameplay
         private void EndShift(LevelRunner runner)
         {
             isActive = false;
-            cooldownTimer = cooldown;
+            currentCooldownDuration = Mathf.Lerp(cooldown, minCooldown, runner.DifficultyRamp01);
+            cooldownTimer = currentCooldownDuration;
             runner.SetGravityActive(false);
 
             if (gravityShiftVfx != null) gravityShiftVfx.SetActive(false);
@@ -161,15 +172,9 @@ namespace SurvivalGrind.Gameplay
                 elapsed += Time.unscaledDeltaTime;
                 float t = elapsed / deniedShakeDuration;
                 if (shiftButtonImage != null) shiftButtonImage.color = Color.Lerp(deniedFlashColor, shiftButtonNormalColor, t);
-                if (shiftButtonRect != null)
-                {
-                    float shake = Mathf.Sin(t * Mathf.PI * 8f) * deniedShakeStrength * (1f - t);
-                    shiftButtonRect.anchoredPosition = shiftButtonBasePos + new Vector2(shake, 0f);
-                }
                 yield return null;
             }
             if (shiftButtonImage != null) shiftButtonImage.color = shiftButtonNormalColor;
-            if (shiftButtonRect != null) shiftButtonRect.anchoredPosition = shiftButtonBasePos;
         }
     }
 }

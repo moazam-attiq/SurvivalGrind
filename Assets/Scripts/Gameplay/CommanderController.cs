@@ -68,6 +68,13 @@ namespace SurvivalGrind.Gameplay
             spawnY = transform.position.y;
             if (bodyRenderer != null) normalBodyColor = bodyRenderer.color;
             if (permanentGlow != null) permanentGlow.SetActive(false);
+
+            // Movement here is a direct transform assignment, not physics-driven, so Unity's default
+            // Discrete detection can let a fast-enough pass (e.g. the right-arrow speed boost) tunnel
+            // straight through a thin hazard trigger without ever firing OnTriggerEnter2D. Continuous
+            // mode makes the physics engine sweep the path instead of just checking the endpoint.
+            var rb = GetComponent<Rigidbody2D>();
+            if (rb != null) rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         }
 
         private void Update()

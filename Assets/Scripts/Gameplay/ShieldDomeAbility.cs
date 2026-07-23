@@ -3,14 +3,26 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using SurvivalGrind.UI;
 
 namespace SurvivalGrind.Gameplay
 {
+    /// The Shield Dome doubles as the run's "ultimate": besides blocking Barrage hazards while
+    /// held, raising it also detonates every bomb and bee near the crowd. That extra power is why
+    /// its cooldown starts noticeably longer than Freeze's or Gravity Shift's.
     public class ShieldDomeAbility : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         [Header("Timing")]
-        [Tooltip("Cooldown applied after the shield is released, before it can be raised again.")]
-        [SerializeField] private float cooldown = 3.5f;
+        [Tooltip("Cooldown at the start of the run, applied after the shield is released.")]
+        [SerializeField] private float cooldown = 8f;
+        [Tooltip("Cooldown once the survival target is reached -- abilities get more spammable the longer you survive.")]
+        [SerializeField] private float minCooldown = 4f;
+
+        [Header("Ultimate Blast")]
+        [Tooltip("Raising the shield also clears every bomb and bee within this radius of the crowd, instead of only blocking whatever's already touching it.")]
+        [SerializeField] private float blastRadius = 10f;
+        [SerializeField] private int blastBonusPerTarget = 15;
+        [SerializeField] private AudioClip blastSfx;
 
         [Header("Feedback")]
         [SerializeField] private AudioSource shieldLoopAudio;
@@ -36,23 +48,25 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private Button shieldButton;
 
         [Header("Denied Feedback")]
-        [Tooltip("Shake + red flash shown on the button when S is pressed but the ability isn't ready yet, " +
-                 "so a mistimed press near a hazard is obvious instead of silently doing nothing.")]
+        [Tooltip("Red flash shown on the button when S is pressed but the ability isn't ready yet, " +
+                 "so a mistimed press near a hazard is obvious instead of silently doing nothing. " +
+                 "Color only -- the button stays fixed in place so a rapid mash never nudges it into a neighbor.")]
         [SerializeField] private float deniedShakeDuration = 0.25f;
-        [SerializeField] private float deniedShakeStrength = 8f;
         [SerializeField] private Color deniedFlashColor = new Color(1f, 0.25f, 0.25f, 1f);
 
         private bool isShielded;
         private float cooldownTimer;
+        private float currentCooldownDuration;
         private Image shieldButtonImage;
-        private RectTransform shieldButtonRect;
         private Color shieldButtonNormalColor;
-        private Vector2 shieldButtonBasePos;
         private Coroutine deniedRoutine;
 
         /// 0 = ready to use, 1 = actively shielded or fully on cooldown.
-        public float CooldownFraction => isShielded ? 1f : Mathf.Clamp01(cooldownTimer / cooldown);
+        public float CooldownFraction => isShielded ? 1f : Mathf.Clamp01(cooldownTimer / Mathf.Max(0.0001f, currentCooldownDuration));
         public bool IsReady => cooldownTimer <= 0f && !isShielded;
+        /// Seconds left before this ability can be used again (0 while already ready), so the HUD
+        /// can show an actual countdown instead of just a fill bar.
+        public float SecondsUntilReady => Mathf.Max(0f, cooldownTimer);
 
         private void Awake()
         {
@@ -60,8 +74,6 @@ namespace SurvivalGrind.Gameplay
             {
                 shieldButtonImage = shieldButton.targetGraphic as Image;
                 if (shieldButtonImage != null) shieldButtonNormalColor = shieldButtonImage.color;
-                shieldButtonRect = shieldButton.GetComponent<RectTransform>();
-                if (shieldButtonRect != null) shieldButtonBasePos = shieldButtonRect.anchoredPosition;
             }
             if (commanderGlow != null)
             {
@@ -70,6 +82,9 @@ namespace SurvivalGrind.Gameplay
                 if (glowSr != null) glowBaseColor = glowSr.color;
             }
         }
+
+        /// Instantly clears the cooldown so the ability is ready again. Used by powerup pickups.
+        public void RefillCooldown() => cooldownTimer = 0f;
 
         private void Update()
         {
@@ -137,15 +152,9 @@ namespace SurvivalGrind.Gameplay
                 elapsed += Time.unscaledDeltaTime;
                 float t = elapsed / deniedShakeDuration;
                 if (shieldButtonImage != null) shieldButtonImage.color = Color.Lerp(deniedFlashColor, shieldButtonNormalColor, t);
-                if (shieldButtonRect != null)
-                {
-                    float shake = Mathf.Sin(t * Mathf.PI * 8f) * deniedShakeStrength * (1f - t);
-                    shieldButtonRect.anchoredPosition = shieldButtonBasePos + new Vector2(shake, 0f);
-                }
                 yield return null;
             }
             if (shieldButtonImage != null) shieldButtonImage.color = shieldButtonNormalColor;
-            if (shieldButtonRect != null) shieldButtonRect.anchoredPosition = shieldButtonBasePos;
         }
 
         private void BeginShield(LevelRunner runner)
@@ -167,12 +176,47 @@ namespace SurvivalGrind.Gameplay
                 if (glowRoutine != null) StopCoroutine(glowRoutine);
                 glowRoutine = StartCoroutine(ExpandGlow());
             }
+
+            BlastNearbyHazards(runner);
+        }
+
+        /// The "ultimate" half of the ability: detonates every bomb and bee within blastRadius of
+        /// the crowd the instant the dome goes up, on top of the dome's normal passive block.
+        private void BlastNearbyHazards(LevelRunner runner)
+        {
+            Vector3 center = crowdFormation != null ? crowdFormation.FormationCenter : transform.position;
+            int cleared = 0;
+
+            foreach (var bomb in FindObjectsByType<TargetedBomb>(FindObjectsSortMode.None))
+            {
+                if (Vector3.Distance(bomb.transform.position, center) <= blastRadius)
+                {
+                    Destroy(bomb.gameObject);
+                    cleared++;
+                }
+            }
+
+            foreach (var bee in FindObjectsByType<ChasingBee>(FindObjectsSortMode.None))
+            {
+                if (Vector3.Distance(bee.transform.position, center) <= blastRadius)
+                {
+                    Destroy(bee.gameObject);
+                    cleared++;
+                }
+            }
+
+            if (cleared > 0)
+            {
+                runner.RegisterBonus(cleared * blastBonusPerTarget, "ULTIMATE BLAST");
+                AudioManager.PlaySfxAt(blastSfx, center);
+            }
         }
 
         private void EndShield(LevelRunner runner)
         {
             isShielded = false;
-            cooldownTimer = cooldown;
+            currentCooldownDuration = Mathf.Lerp(cooldown, minCooldown, runner.DifficultyRamp01);
+            cooldownTimer = currentCooldownDuration;
             runner.SetShieldActive(false);
 
             if (shieldLoopAudio != null) shieldLoopAudio.Stop();

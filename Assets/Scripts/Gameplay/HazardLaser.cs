@@ -15,7 +15,12 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private float fireDuration = 1f;
 
         [Header("Damage")]
+        [Tooltip("Max crowd members this hazard can kill per hit. Actual count is however many were really standing in the beam.")]
         [SerializeField] private int killBatchSize = 10;
+        [Tooltip("Width (in world units, along the direction of travel) of the real kill zone around the Commander at the moment of impact. Kept narrow (roughly one crowd row) since the hazard's own trigger box above is sized for detection range, not blast radius.")]
+        [SerializeField] private float impactWidth = 1f;
+        [Tooltip("Warning duration is multiplied down toward this fraction as the survival timer approaches its target, forcing quicker Freeze reactions later in the run.")]
+        [SerializeField] private float minWarningFactor = 0.5f;
 
         [Header("Ability Gating")]
         [Tooltip("Which ability (and ONLY that ability) neutralizes this hazard. Laser walls = Freeze. " +
@@ -48,6 +53,8 @@ namespace SurvivalGrind.Gameplay
         [Header("Firing Color")]
         [Tooltip("Saturated, prominent red used while the beam is actually live/dangerous.")]
         [SerializeField] private Color firingColor = new Color(1f, 0.16f, 0.12f, 1f);
+        [Tooltip("Amber color the beam ramps toward during the warning window, so 'about to fire' reads as an unmistakable color change and not just a subtle alpha flicker.")]
+        [SerializeField] private Color warningColor = new Color(1f, 0.65f, 0.1f, 1f);
 
         [Header("Loop Reset Feel")]
         [Tooltip("How long a mid-fire beam eases back to idle when the time loop resets, instead of hard-cutting.")]
@@ -101,6 +108,7 @@ namespace SurvivalGrind.Gameplay
                 beamGlow.enabled = true;
                 beamGlow.intensity = idleGlowIntensity;
             }
+            HazardIndicator.Spawn(transform, requiredAbility, 1.8f);
         }
 
         private void OnEnable()
@@ -154,13 +162,18 @@ namespace SurvivalGrind.Gameplay
             if (warningIndicator != null) warningIndicator.enabled = true;
             AudioManager.PlaySfx(warningSirenClip);
             frozenBlockRegistered = false;
+            LevelRunner.Instance?.NotifyHazardWarning(requiredAbility);
 
-            // Subtle telegraph -- a faint flutter rather than an obvious dramatic build-up,
-            // so the warning barely announces itself ahead of the strike.
+            float ramp = LevelRunner.Instance != null ? LevelRunner.Instance.DifficultyRamp01 : 0f;
+            float effectiveWarning = Mathf.Lerp(warningDuration, warningDuration * minWarningFactor, ramp);
+
+            // Ramps the whole beam toward warningColor as the strike approaches, on top of the
+            // existing pulse, so "about to fire" is a clear color change, not just a subtle flicker.
             float elapsed = 0f;
-            while (elapsed < warningDuration)
+            while (elapsed < effectiveWarning)
             {
                 elapsed += Time.deltaTime;
+                float t = elapsed / effectiveWarning;
                 if (warningIndicator != null)
                 {
                     float pulse = (Mathf.Sin(elapsed * 12f) + 1f) * 0.5f;
@@ -168,6 +181,13 @@ namespace SurvivalGrind.Gameplay
                     c.a = Mathf.Lerp(0.55f, 0.7f, pulse);
                     warningIndicator.color = c;
                 }
+                if (beamRenderer != null)
+                {
+                    var c = Color.Lerp(beamBaseColor, warningColor, t);
+                    c.a = Mathf.Lerp(idleAlpha, 0.9f, t);
+                    beamRenderer.color = c;
+                }
+                if (beamGlow != null) beamGlow.intensity = Mathf.Lerp(idleGlowIntensity, firingGlowIntensity * 0.6f, t);
                 yield return null;
             }
 
@@ -179,6 +199,7 @@ namespace SurvivalGrind.Gameplay
             if (impactFlipbook != null) impactFlipbook.Play();
             if (audioSource != null && audioSource.clip != null) audioSource.Play();
 
+            int totalKilled = 0;
             float fireElapsed = 0f;
             while (fireElapsed < fireDuration)
             {
@@ -186,6 +207,14 @@ namespace SurvivalGrind.Gameplay
                 float flicker = Flicker();
                 SetFiringColor(Mathf.Clamp01(flicker));
                 if (beamGlow != null) beamGlow.intensity = firingGlowIntensity * flicker;
+
+                // The beam sits at a fixed spot; the crowd trails behind and scrolls into it over
+                // this window, so keep sampling a narrow slice here rather than judging by one instant.
+                if (hitRegistered && !frozenBlockRegistered && totalKilled < killBatchSize)
+                {
+                    var formation = CrowdFormationController.Instance;
+                    if (formation != null) totalKilled += formation.KillNear(hitCollider.bounds.center, impactWidth, killBatchSize - totalKilled);
+                }
                 yield return null;
             }
 
@@ -195,7 +224,11 @@ namespace SurvivalGrind.Gameplay
             if (impactVfx != null) impactVfx.Stop();
             if (beamGlow != null) beamGlow.intensity = idleGlowIntensity;
 
-            if (!hitRegistered && !frozenBlockRegistered)
+            if (hitRegistered && !frozenBlockRegistered)
+            {
+                LevelRunner.Instance?.RegisterHazardHit(totalKilled);
+            }
+            else if (!hitRegistered && !frozenBlockRegistered)
             {
                 LevelRunner.Instance?.RegisterSafePass();
             }
@@ -282,9 +315,7 @@ namespace SurvivalGrind.Gameplay
                 return;
             }
 
-            if (hitRegistered) return;
             hitRegistered = true;
-            runner.RegisterHazardHit(killBatchSize);
         }
     }
 }

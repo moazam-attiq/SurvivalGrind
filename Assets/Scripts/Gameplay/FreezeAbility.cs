@@ -9,7 +9,10 @@ namespace SurvivalGrind.Gameplay
     {
         [Header("Timing")]
         [SerializeField] private float freezeDuration = 1.3f;
+        [Tooltip("Cooldown at the start of the run.")]
         [SerializeField] private float cooldown = 3.5f;
+        [Tooltip("Cooldown once the survival target is reached -- abilities get more spammable the longer you survive.")]
+        [SerializeField] private float minCooldown = 1.75f;
 
         [Header("Feedback")]
         [SerializeField] private AudioSource freezeLoopAudio;
@@ -21,24 +24,30 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private Button freezeButton;
 
         [Header("Denied Feedback")]
-        [Tooltip("Shake + red flash shown on the button when F is pressed but the ability isn't ready yet, " +
-                 "so a mistimed press near a hazard is obvious instead of silently doing nothing.")]
+        [Tooltip("Red flash shown on the button when F is pressed but the ability isn't ready yet, " +
+                 "so a mistimed press near a hazard is obvious instead of silently doing nothing. " +
+                 "Color only -- the button stays fixed in place so a rapid mash never nudges it into a neighbor.")]
         [SerializeField] private float deniedShakeDuration = 0.25f;
-        [SerializeField] private float deniedShakeStrength = 8f;
         [SerializeField] private Color deniedFlashColor = new Color(1f, 0.25f, 0.25f, 1f);
 
         private bool isFrozenByAbility;
         private float freezeTimer;
         private float cooldownTimer;
+        private float currentCooldownDuration;
         private Image freezeButtonImage;
-        private RectTransform freezeButtonRect;
         private Color freezeButtonNormalColor;
-        private Vector2 freezeButtonBasePos;
         private Coroutine deniedRoutine;
 
-        /// 0 = ready to use, 1 = actively frozen or fully on cooldown.
-        public float CooldownFraction => isFrozenByAbility ? 1f : Mathf.Clamp01(cooldownTimer / cooldown);
+        /// 0 = ready to use, 1 = actively frozen or fully on cooldown. While frozen this counts UP as
+        /// freezeTimer burns down (so the HUD fill drains to show time remaining, hitting 1 exactly
+        /// when the freeze ends), then counts back down over the cooldown as usual.
+        public float CooldownFraction => isFrozenByAbility
+            ? Mathf.Clamp01(1f - freezeTimer / freezeDuration)
+            : Mathf.Clamp01(cooldownTimer / Mathf.Max(0.0001f, currentCooldownDuration));
         public bool IsReady => cooldownTimer <= 0f && !isFrozenByAbility;
+        /// Seconds left before this ability can be used again (0 while already ready), so the HUD
+        /// can show an actual countdown instead of just a fill bar.
+        public float SecondsUntilReady => isFrozenByAbility ? freezeTimer : Mathf.Max(0f, cooldownTimer);
 
         private void Awake()
         {
@@ -47,8 +56,6 @@ namespace SurvivalGrind.Gameplay
                 freezeButton.onClick.AddListener(TryActivate);
                 freezeButtonImage = freezeButton.targetGraphic as Image;
                 if (freezeButtonImage != null) freezeButtonNormalColor = freezeButtonImage.color;
-                freezeButtonRect = freezeButton.GetComponent<RectTransform>();
-                if (freezeButtonRect != null) freezeButtonBasePos = freezeButtonRect.anchoredPosition;
             }
         }
 
@@ -75,6 +82,9 @@ namespace SurvivalGrind.Gameplay
             bool pressed = Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame;
             if (pressed) TryActivate();
         }
+
+        /// Instantly clears the cooldown so the ability is ready again. Used by powerup pickups.
+        public void RefillCooldown() => cooldownTimer = 0f;
 
         public void TryActivate()
         {
@@ -115,15 +125,9 @@ namespace SurvivalGrind.Gameplay
                 elapsed += Time.unscaledDeltaTime;
                 float t = elapsed / deniedShakeDuration;
                 if (freezeButtonImage != null) freezeButtonImage.color = Color.Lerp(deniedFlashColor, freezeButtonNormalColor, t);
-                if (freezeButtonRect != null)
-                {
-                    float shake = Mathf.Sin(t * Mathf.PI * 8f) * deniedShakeStrength * (1f - t);
-                    freezeButtonRect.anchoredPosition = freezeButtonBasePos + new Vector2(shake, 0f);
-                }
                 yield return null;
             }
             if (freezeButtonImage != null) freezeButtonImage.color = freezeButtonNormalColor;
-            if (freezeButtonRect != null) freezeButtonRect.anchoredPosition = freezeButtonBasePos;
         }
 
         private void BeginFreeze(LevelRunner runner)
@@ -140,7 +144,8 @@ namespace SurvivalGrind.Gameplay
         private void EndFreeze(LevelRunner runner)
         {
             isFrozenByAbility = false;
-            cooldownTimer = cooldown;
+            currentCooldownDuration = Mathf.Lerp(cooldown, minCooldown, runner.DifficultyRamp01);
+            cooldownTimer = currentCooldownDuration;
             runner.SetFreezeActive(false);
 
             if (freezeLoopAudio != null) freezeLoopAudio.Stop();

@@ -26,11 +26,18 @@ namespace SurvivalGrind.Gameplay
 
         [Header("Shield Repel")]
         [SerializeField] private int shieldBlockBonus = 20;
+        [Tooltip("Width (world units) of the real kill zone around the Commander when the bee stings, matching LaneBarrier's narrow per-hit zone so the crowd visibly shrinks by the same amount the audience count does.")]
+        [SerializeField] private float impactWidth = 1f;
 
         [Header("Audio")]
         [SerializeField] private AudioClip beeLoopSfx;
         [SerializeField] private AudioClip stingSfx;
         [SerializeField] private AudioClip blockSfx;
+
+        /// Set by BeeHorde right after spawn. A horde bee instantly kills the player on unblocked
+        /// contact instead of ticking crowd damage - Shield/Freeze still repel/kill it individually
+        /// exactly as before, only unblocked contact is different.
+        public bool IsHordeMember { get; set; }
 
         private Transform target;
         private float age;
@@ -46,7 +53,7 @@ namespace SurvivalGrind.Gameplay
             wanderSeed = Random.value * 100f;
             var col = GetComponent<Collider2D>();
             if (col != null) col.isTrigger = true;
-            if (beeLoopSfx != null) AudioManager.PlaySfx(beeLoopSfx);
+            if (beeLoopSfx != null) AudioManager.PlaySfxAt(beeLoopSfx, transform.position);
         }
 
         private void OnEnable()
@@ -104,12 +111,34 @@ namespace SurvivalGrind.Gameplay
                 repelled = true;
                 runner.AddScore(shieldBlockBonus);
                 runner.RegisterFreezeBlock("SHIELDED THE SWARM");
-                AudioManager.PlaySfx(blockSfx);
+                AudioManager.PlaySfxAt(blockSfx, transform.position);
                 return;
             }
 
-            runner.RegisterHazardHit(tickKillSize);
-            AudioManager.PlaySfx(stingSfx);
+            if (runner.IsFreezeActive)
+            {
+                // Freeze doubles as an emergency bee-killer: touching a bee while frozen kills it
+                // outright instead of just ticking damage, giving Freeze real teeth against a swarm
+                // even in levels with no laser walls for it to counter.
+                runner.AddScore(shieldBlockBonus);
+                runner.RegisterFreezeBlock("FROZE THE SWARM");
+                AudioManager.PlaySfxAt(blockSfx, transform.position);
+                Destroy(gameObject);
+                return;
+            }
+
+            if (IsHordeMember)
+            {
+                // Bee Horde rule: contact instantly ends the run and does not touch score.
+                AudioManager.PlaySfxAt(stingSfx, transform.position);
+                runner.GameOver();
+                return;
+            }
+
+            var formation = CrowdFormationController.Instance;
+            int killed = formation != null ? formation.KillNear(transform.position, impactWidth, tickKillSize) : tickKillSize;
+            runner.RegisterHazardHit(killed);
+            AudioManager.PlaySfxAt(stingSfx, transform.position);
         }
 
         private void OnTriggerEnter2D(Collider2D other)

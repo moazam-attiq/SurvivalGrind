@@ -25,6 +25,8 @@ namespace SurvivalGrind.Gameplay
         [SerializeField] private float groundY = -5f;
         [SerializeField] private float spinSpeed = 300f;
         [SerializeField] private int shieldBlockBonus = 30;
+        [Tooltip("Width (world units) of the real kill zone at the blast point, matching LaneBarrier's narrow per-hit zone so the crowd visibly shrinks by the same amount the audience count does.")]
+        [SerializeField] private float impactWidth = 1.5f;
 
         [Header("Feedback")]
         [SerializeField] private GameObject explosionVfx;
@@ -43,7 +45,9 @@ namespace SurvivalGrind.Gameplay
 
         private static Sprite proceduralRingSprite;
 
-        private static Sprite GetRingSprite()
+        /// Internal (not private) so other hazard VFX -- e.g. BeeHorde's super-ability burst -- can
+        /// reuse this same procedural ring instead of duplicating the texture-generation code.
+        internal static Sprite GetRingSprite()
         {
             if (proceduralRingSprite != null) return proceduralRingSprite;
             const int size = 64;
@@ -100,7 +104,7 @@ namespace SurvivalGrind.Gameplay
             if (bodyRenderer != null) bodyRenderer.enabled = false;
             transform.position = new Vector3(targetX, groundY, transform.position.z);
             reticle.position = new Vector3(targetX, groundY, 0f);
-            AudioManager.PlaySfx(warningSfx);
+            AudioManager.PlaySfxAt(warningSfx, transform.position);
         }
 
         private void Update()
@@ -156,17 +160,19 @@ namespace SurvivalGrind.Gameplay
                 {
                     runner.AddScore(shieldBlockBonus);
                     runner.RegisterFreezeBlock("SHIELDED THE BOMB");
-                    AudioManager.PlaySfx(blockSfx);
+                    AudioManager.PlaySfxAt(blockSfx, transform.position);
                 }
                 else
                 {
-                    runner.RegisterHazardHit(killBatchSize);
-                    AudioManager.PlaySfx(explodeSfx);
+                    var formation = CrowdFormationController.Instance;
+                    int killed = formation != null ? formation.KillNear(transform.position, impactWidth, killBatchSize) : killBatchSize;
+                    runner.RegisterHazardHit(killed);
+                    AudioManager.PlaySfxAt(explodeSfx, transform.position);
                 }
             }
             else
             {
-                AudioManager.PlaySfx(explodeSfx);
+                AudioManager.PlaySfxAt(explodeSfx, transform.position);
             }
 
             if (explosionVfx != null)
