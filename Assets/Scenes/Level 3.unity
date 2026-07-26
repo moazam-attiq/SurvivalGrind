@@ -462,6 +462,9 @@ MonoBehaviour:
   warningDuration: 1.6
   fireDuration: 1.1
   killBatchSize: 8
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: BOMB DEFLECTED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -473,6 +476,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 1, g: 0.42, b: 0.08, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 26533212}
   warningIndicator: {fileID: 647610250}
@@ -1316,6 +1320,9 @@ MonoBehaviour:
   warningDuration: 1.6
   fireDuration: 1.1
   killBatchSize: 8
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: BOMB DEFLECTED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -1327,6 +1334,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 1, g: 0.42, b: 0.08, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 68224967}
   warningIndicator: {fileID: 1567753403}
@@ -10474,6 +10482,9 @@ MonoBehaviour:
   warningDuration: 1.9
   fireDuration: 0.9
   killBatchSize: 12
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: STRIKE SHIELDED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -10485,6 +10496,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 0.85, g: 0.25, b: 1, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 187128843}
   warningIndicator: {fileID: 973753278}
@@ -29152,6 +29164,9 @@ MonoBehaviour:
   warningDuration: 0.8
   fireDuration: 0.6
   killBatchSize: 10
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: SPIKES BLOCKED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -29163,6 +29178,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 0.85, g: 0.92, b: 0.97, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 414879181}
   warningIndicator: {fileID: 1019772927}
@@ -34796,6 +34812,9 @@ MonoBehaviour:
   warningDuration: 1.6
   fireDuration: 1.1
   killBatchSize: 8
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: BOMB DEFLECTED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -34807,6 +34826,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 1, g: 0.42, b: 0.08, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 439486003}
   warningIndicator: {fileID: 285658642}
@@ -35690,6 +35710,9 @@ MonoBehaviour:
   warningDuration: 0.8
   fireDuration: 0.6
   killBatchSize: 10
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: SPIKES BLOCKED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -35701,6 +35724,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 0.85, g: 0.92, b: 0.97, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 468421910}
   warningIndicator: {fileID: 581865212}
@@ -45720,7 +45744,6 @@ RectTransform:
   - {fileID: 1017139166}
   - {fileID: 1684304252}
   - {fileID: 662979847}
-  - {fileID: 671929931}
   m_Father: {fileID: 1107116154}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -47561,6 +47584,9 @@ MonoBehaviour:
   finalScoreText: {fileID: 2041757569}
   survivorsStatText: {fileID: 56672247}
   timeStatText: {fileID: 1055675971}
+  unlockStatusText: {fileID: 0}
+  unlockedColor: {r: 0.4, g: 1, b: 0.55, a: 1}
+  notUnlockedColor: {r: 1, g: 0.75, b: 0.3, a: 1}
 --- !u!1 &570905276
 GameObject:
   m_ObjectHideFlags: 0
@@ -48402,6 +48428,9 @@ MonoBehaviour:
   warningDuration: 1.6
   fireDuration: 1.1
   killBatchSize: 8
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: BOMB DEFLECTED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -48413,6 +48442,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 1, g: 0.42, b: 0.08, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 598954678}
   warningIndicator: {fileID: 793493822}
@@ -48770,6 +48800,9 @@ MonoBehaviour:
   warningDuration: 0.8
   fireDuration: 0.6
   killBatchSize: 10
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: SPIKES BLOCKED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -48781,6 +48814,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 0.85, g: 0.92, b: 0.97, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 605575737}
   warningIndicator: {fileID: 428924305}
@@ -56808,144 +56842,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
   m_SpriteSortPoint: 0
---- !u!1 &671929930
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 671929931}
-  - component: {fileID: 671929933}
-  - component: {fileID: 671929932}
-  m_Layer: 0
-  m_Name: ControlsHint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &671929931
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 671929930}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 552482828}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -232}
-  m_SizeDelta: {x: 420, y: 130}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &671929932
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 671929930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_text: "<color=#4DF2FF>\u2191 \u2193</color> LANES   <color=#4DF2FF>\u2190 \u2192</color>
-    SPEED\\n\\n<color=#4DF2FF>S</color> SHIELD DOME"
-  m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 2bcc8d858cc3b3349980cb2774abf98b, type: 2}
-  m_sharedMaterial: {fileID: -5106402670139053254, guid: 2bcc8d858cc3b3349980cb2774abf98b, type: 2}
-  m_fontSharedMaterials: []
-  m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
-  m_fontColor32:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 0.85, g: 0.9, b: 0.95, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
-  m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
-  m_tintAllSprites: 0
-  m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
-  m_overrideHtmlColors: 0
-  m_faceColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontSize: 15
-  m_fontSizeBase: 15
-  m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 0
-  m_fontSizeMax: 0
-  m_fontStyle: 0
-  m_HorizontalAlignment: 2
-  m_VerticalAlignment: 512
-  m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_characterHorizontalScale: 1
-  m_wordSpacing: 0
-  m_lineSpacing: 12
-  m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
-  m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
-  m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
-  m_linkedTextComponent: {fileID: 0}
-  parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 0
-  m_ActiveFontFeatures: 00000000
-  m_enableExtraPadding: 0
-  checkPaddingRequired: 0
-  m_isRichText: 1
-  m_EmojiFallbackSupport: 1
-  m_parseCtrlCharacters: 1
-  m_isOrthographic: 0
-  m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
-  m_uvLineOffset: 0
-  m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
-  m_VertexBufferAutoSizeReduction: 0
-  m_useMaxVisibleDescender: 1
-  m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_isUsingLegacyAnimationComponent: 0
-  m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_baseMaterial: {fileID: 0}
-  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!222 &671929933
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 671929930}
-  m_CullTransparentMesh: 1
 --- !u!1 &672759362
 GameObject:
   m_ObjectHideFlags: 0
@@ -62427,6 +62323,9 @@ MonoBehaviour:
   warningDuration: 0.8
   fireDuration: 0.6
   killBatchSize: 10
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: SPIKES BLOCKED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -62438,6 +62337,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 0.85, g: 0.92, b: 0.97, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 702808169}
   warningIndicator: {fileID: 1255512074}
@@ -65770,6 +65670,9 @@ MonoBehaviour:
   warningDuration: 0.8
   fireDuration: 0.6
   killBatchSize: 10
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: SPIKES BLOCKED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -65781,6 +65684,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 0.85, g: 0.92, b: 0.97, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 853110543}
   warningIndicator: {fileID: 1602318052}
@@ -73399,6 +73303,9 @@ MonoBehaviour:
   warningDuration: 1.6
   fireDuration: 1.1
   killBatchSize: 8
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: BOMB DEFLECTED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -73410,6 +73317,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 1, g: 0.42, b: 0.08, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 987802703}
   warningIndicator: {fileID: 1660830354}
@@ -80298,10 +80206,19 @@ MonoBehaviour:
   survivalTimerBar: {fileID: 2046254872}
   freezeAbility: {fileID: 0}
   freezeCooldownFill: {fileID: 0}
+  freezeCooldownText: {fileID: 0}
   shieldDomeAbility: {fileID: 1510398887}
   shieldDomeCooldownFill: {fileID: 1558647180}
+  shieldCooldownText: {fileID: 0}
   gravityShiftAbility: {fileID: 0}
   gravityShiftCooldownFill: {fileID: 0}
+  gravityCooldownText: {fileID: 0}
+  notificationText: {fileID: 0}
+  notificationDuration: 1.3
+  notificationGainColor: {r: 0.4, g: 1, b: 0.55, a: 1}
+  notificationLossColor: {r: 1, g: 0.35, b: 0.35, a: 1}
+  promptPulseScale: 1.35
+  promptPulseDuration: 0.35
 --- !u!1 &1197019983
 GameObject:
   m_ObjectHideFlags: 0
@@ -94321,6 +94238,9 @@ MonoBehaviour:
   warningDuration: 0.8
   fireDuration: 0.6
   killBatchSize: 10
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: SPIKES BLOCKED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -94332,6 +94252,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 0.85, g: 0.92, b: 0.97, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 1271699953}
   warningIndicator: {fileID: 1634192030}
@@ -94896,7 +94817,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.LaneBarrier
   killBatchSize: 6
+  impactWidth: 1
   retriggerCooldown: 0.5
+  requiredAbility: 1
 --- !u!61 &1316898745
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -97338,7 +97261,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.LaneBarrier
   killBatchSize: 6
+  impactWidth: 1
   retriggerCooldown: 0.5
+  requiredAbility: 1
 --- !u!61 &1363328831
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -97815,7 +97740,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.LaneBarrier
   killBatchSize: 6
+  impactWidth: 1
   retriggerCooldown: 0.5
+  requiredAbility: 1
 --- !u!61 &1377302751
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -98362,6 +98289,9 @@ MonoBehaviour:
   warningDuration: 0.8
   fireDuration: 0.6
   killBatchSize: 10
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: SPIKES BLOCKED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -98373,6 +98303,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 0.85, g: 0.92, b: 0.97, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 1407011833}
   warningIndicator: {fileID: 1565557989}
@@ -99034,6 +98965,9 @@ MonoBehaviour:
   warningDuration: 1.9
   fireDuration: 0.9
   killBatchSize: 12
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: STRIKE SHIELDED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -99045,6 +98979,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 0.85, g: 0.25, b: 1, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 1425519801}
   warningIndicator: {fileID: 272787911}
@@ -120375,7 +120310,10 @@ MonoBehaviour:
   requireMinScoreToWin: 0
   nextLevelSceneName: Level 4
   levelNumber: 3
+  unlockScoreThreshold: 150
+  isFinalLevel: 0
   victoryPanel: {fileID: 568154335}
+  finalVictoryPanel: {fileID: 0}
   pausePanel: {fileID: 1107116153}
   musicSource: {fileID: 1326220430}
   crowdLossSfx: {fileID: 8300000, guid: ac20a3fecd028a54f933b3192756a513, type: 3}
@@ -120416,6 +120354,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.ShieldDomeAbility
   cooldown: 3.5
+  minCooldown: 4
+  blastRadius: 10
+  blastBonusPerTarget: 15
+  blastSfx: {fileID: 0}
   shieldLoopAudio: {fileID: 106231552}
   shieldReleaseAudio: {fileID: 290236444}
   shieldDomeVfx: {fileID: 123210968}
@@ -120427,7 +120369,6 @@ MonoBehaviour:
   glowExpandedColor: {r: 0.3, g: 1, b: 0.45, a: 0.85}
   shieldButton: {fileID: 1558647179}
   deniedShakeDuration: 0.25
-  deniedShakeStrength: 8
   deniedFlashColor: {r: 1, g: 0.25, b: 0.25, a: 1}
 --- !u!1 &1514135196
 GameObject:
@@ -122300,6 +122241,9 @@ MonoBehaviour:
   warningDuration: 1.9
   fireDuration: 0.9
   killBatchSize: 12
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: STRIKE SHIELDED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -122311,6 +122255,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 0.85, g: 0.25, b: 1, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 1516301990}
   warningIndicator: {fileID: 1519588209}
@@ -122730,6 +122675,9 @@ MonoBehaviour:
   warningDuration: 0.8
   fireDuration: 0.6
   killBatchSize: 10
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: SPIKES BLOCKED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -122741,6 +122689,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 0.85, g: 0.92, b: 0.97, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 1530723971}
   warningIndicator: {fileID: 835137082}
@@ -123007,6 +122956,9 @@ MonoBehaviour:
   warningDuration: 0.8
   fireDuration: 0.6
   killBatchSize: 10
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: SPIKES BLOCKED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -123018,6 +122970,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 0.85, g: 0.92, b: 0.97, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 1542656690}
   warningIndicator: {fileID: 1782680283}
@@ -125472,7 +125425,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.LaneBarrier
   killBatchSize: 6
+  impactWidth: 1
   retriggerCooldown: 0.5
+  requiredAbility: 1
 --- !u!61 &1567115638
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -125979,6 +125934,7 @@ MonoBehaviour:
   uiClickClip: {fileID: 8300000, guid: 0ff295965e7652141a32a3919e4b1a09, type: 3}
   pauseClip: {fileID: 8300000, guid: cf88f516a92674649942ba1d2c3be5be, type: 3}
   resumeClip: {fileID: 8300000, guid: c83f05274b674fa4a8513b60628037f5, type: 3}
+  audibleRange: 10
 --- !u!82 &1600650300
 AudioSource:
   m_ObjectHideFlags: 0
@@ -149909,8 +149865,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -155897,6 +155853,9 @@ MonoBehaviour:
   warningDuration: 1.9
   fireDuration: 0.9
   killBatchSize: 12
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: STRIKE SHIELDED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -155908,6 +155867,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 0.85, g: 0.25, b: 1, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 1808056650}
   warningIndicator: {fileID: 1746302555}
@@ -159175,6 +159135,9 @@ MonoBehaviour:
   warningDuration: 1.6
   fireDuration: 1.1
   killBatchSize: 8
+  impactWidth: 1
+  minWarningFactor: 0.5
+  requiredAbility: 0
   blockNotificationLabel: BOMB DEFLECTED! +40
   idleAlpha: 0.5
   idlePulseSpeed: 1.2
@@ -159186,6 +159149,7 @@ MonoBehaviour:
   strobeInterval: 0.35
   strobeOffAlpha: 0.03
   firingColor: {r: 1, g: 0.42, b: 0.08, a: 1}
+  warningColor: {r: 1, g: 0.65, b: 0.1, a: 1}
   resetFadeDuration: 0.15
   beamRenderer: {fileID: 1873809384}
   warningIndicator: {fileID: 1469190006}
@@ -159457,7 +159421,7 @@ RectTransform:
   m_GameObject: {fileID: 1879758608}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.18, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 552482828}
@@ -186227,7 +186191,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SurvivalGrind.Gameplay.LaneBarrier
   killBatchSize: 6
+  impactWidth: 1
   retriggerCooldown: 0.5
+  requiredAbility: 1
 --- !u!61 &2098119930
 BoxCollider2D:
   m_ObjectHideFlags: 0
